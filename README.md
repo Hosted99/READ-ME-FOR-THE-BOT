@@ -1,3 +1,11 @@
+
+---
+
+# READ-ME-FOR-THE-BOT
+guide for bot
+# 🏴‍☠️ Sailing Kingdom Bot — Наръчник / User Guide
+
+---
 ## 🇬🇧 ENGLISH
 
 ### 🚀 Getting Started — New Server Setup
@@ -191,13 +199,6 @@ good night / nighty night  ← bot replies with a good night GIF
 good morning / добро утро  ← bot replies with a random good morning GIF
 ```
 
----
-
-# READ-ME-FOR-THE-BOT
-guide for bot
-# 🏴‍☠️ Sailing Kingdom Bot — Наръчник / User Guide
-
----
 
 ## 🇧🇬 БЪЛГАРСКИ
 
