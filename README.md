@@ -126,7 +126,8 @@ Hydra - @Nami @Sanji
 ```
 
 ```
-> 💡 **Important Note on Permissions:**
+> [!NOTE]
+> ### 💡 **Important Note on Permissions:**
 > In order for your moderators to use ship admin commands and the fleet reset button **without needing full Discord Administrator permissions**, you must first register your server's moderator role using:
 > `!setconfig mod_role <role-id>`
     > The role must have the following Discord permissions enabled
