@@ -1,11 +1,6 @@
 
----
-
-# READ-ME-FOR-THE-BOT
-guide for bot
 # 🏴‍☠️ Sailing Kingdom Bot — Наръчник / User Guide
 
----
 ## 🇬🇧 ENGLISH
 
 ### 🚀 Getting Started — New Server Setup
@@ -16,9 +11,9 @@ Settings → Advanced → Developer Mode → right-click channel/role → **Copy
 **2. Full configuration (Admin only):**
 ```
 !setconfig level_up_channel         <id>  ← channel for level-up messages
-!setconfig log_channel              <id>  ← channel for db logs
+!setconfig log_channel              <id>  ← channel for XP logs
 !setconfig stats_channel            <id>  ← channel for !top leaderboard
-!setconfig admin_log_channel        <id>  ← channel for moderation logs
+!setconfig admin_log_channel        <id>  ← channel for mod logs + crew approvals
 !setconfig welcome_channel          <id>  ← channel for new members
 !setconfig belly_rush_channel       <id>  ← channel for the Belly Rush panel
 !setconfig belly_rush_roles_channel <id>  ← channel for !want commands
@@ -68,7 +63,7 @@ Disabled by default. Password provided only by the bot owner.
 ### 🌐 Translation Systems — Password Activation
 
 #### 1. Flag Reaction Translator
-React with a flag → translation in channel, disappears after 2 min. Each user gets their own translation.
+React with a flag → translation in channel, disappears after 2 min.
 ```
 !translate-enable <password>   ← activate for THIS server
 !translate-disable             ← disable (Admin only)
@@ -76,7 +71,7 @@ React with a flag → translation in channel, disappears after 2 min. Each user 
 Supports 50+ languages. Works in **all channels**.
 
 #### 2. Auto-Translate Non-English Messages
-Non-English message → automatic English translation below it. **Does not disappear.**
+Non-English message → English translation below it. **Does not disappear.**
 ```
 !auto-translate-enable <password>   ← activate for THIS server
 !auto-translate-disable             ← disable (Admin only)
@@ -112,18 +107,36 @@ Hydra - @Nami @Sanji
 
 ### 🚢 Belly Rush — Ships & Crew
 
+**Ship management (Admin):**
 ```
 !ship-add Sunny ☀️ @mugi-role      ← add a ship
 !ship-remove Sunny                  ← remove a ship
 !ship-list                          ← view all ships and crews
 !ship-captain @Luffy Sunny         ← set permanent captain (never reset)
 !ship-uncaptain @Luffy             ← remove captain
-!ship-listpermanent                 ← list all permanent crew members
-!ship-removepermanent @user        ← remove from permanent crew
-!want Sunny                        ← request permanent spot (in belly_rush_roles_channel)
 !setup                             ← manually send panel (auto Tue/Fri 10:00)
 ```
 
+**Permanent crew:**
+```
+!want Sunny                        ← request permanent spot (requires Mod approval)
+!ship-addpermanent @user Sunny     ← add directly without approval (Mod/Admin)
+!ship-removepermanent @user        ← remove from permanent crew (Mod/Admin)
+!ship-listpermanent                 ← list all permanent crew members (Mod/Admin)
+```
+
+```
+> 💡 **Important Note on Permissions:**
+> In order for your moderators to use ship admin commands and the fleet reset button **without needing full Discord Administrator permissions**, you must first register your server's moderator role using:
+> `!setconfig mod_role <role-id>`
+    > The role must have the following Discord permissions enabled
+        > * View Channels
+        > * Manage Roles
+        > * Mention @everyone, @here, and All Roles
+    > The bot will automatically recognize members with this role as authorized managers for the fleet on a per-server basis!
+
+> 💡 When a user types `!want Sunny`, the bot sends a request to `admin_log_channel` with **✅ Approve** / **❌ Deny** buttons. A Mod or Admin clicks the button and the user gets a DM with the result.
+```
 ---
 
 ### ⚙️ Repair Ship
@@ -198,7 +211,7 @@ repair @Sunny                                      ← usage (any member)
 good night / nighty night  ← bot replies with a good night GIF
 good morning / добро утро  ← bot replies with a random good morning GIF
 ```
-
+---
 
 ## 🇧🇬 БЪЛГАРСКИ
 
@@ -210,9 +223,9 @@ Settings → Advanced → Developer Mode → десен клик на канал
 **2. Пълна конфигурация (само Админ):**
 ```
 !setconfig level_up_channel         <id>  ← канал за level-up съобщения
-!setconfig log_channel              <id>  ← канал за db логове
+!setconfig log_channel              <id>  ← канал за XP логове
 !setconfig stats_channel            <id>  ← канал за !top класация
-!setconfig admin_log_channel        <id>  ← канал за модерация логове
+!setconfig admin_log_channel        <id>  ← канал за модерация логове + crew одобрения
 !setconfig welcome_channel          <id>  ← канал за нови членове
 !setconfig belly_rush_channel       <id>  ← канал за Belly Rush панела
 !setconfig belly_rush_roles_channel <id>  ← канал за !want команди
@@ -262,7 +275,7 @@ Settings → Advanced → Developer Mode → десен клик на канал
 ### 🌐 Преводни системи — Активиране с парола
 
 #### 1. Флаг реакция превод
-Реагираш с флаг → превод в канала, изчезва след 2 мин. Всеки получава свой превод.
+Реагираш с флаг → превод в канала, изчезва след 2 мин.
 ```
 !translate-enable <парола>   ← активира за ТОЗИ сървър
 !translate-disable           ← спира (само Админ)
@@ -270,7 +283,7 @@ Settings → Advanced → Developer Mode → десен клик на канал
 Поддържа 50+ езика. Работи в **всички канали**.
 
 #### 2. Авто-превод на не-английски съобщения
-Не-английско съобщение → автоматичен превод на английски под него. **Не изчезва.**
+Не-английско съобщение → превод на английски под него. **Не изчезва.**
 ```
 !auto-translate-enable <парола>   ← активира за ТОЗИ сървър
 !auto-translate-disable           ← спира (само Админ)
@@ -306,18 +319,36 @@ Hydra - @Nami @Sanji
 
 ### 🚢 Belly Rush — Кораби и екипаж
 
+**Управление на кораби (Админ):**
 ```
 !ship-add Sunny ☀️ @mugi-role      ← добавя кораб
 !ship-remove Sunny                  ← маха кораб
 !ship-list                          ← всички кораби и екипажи
 !ship-captain @Luffy Sunny         ← постоянен капитан (не се ресетва)
 !ship-uncaptain @Luffy             ← маха капитан
-!ship-listpermanent                 ← показва всички постоянни членове
-!ship-removepermanent @user        ← маха от постоянен екипаж
-!want Sunny                        ← заявява постоянно място (в belly_rush_roles_channel)
 !setup                             ← изпраща панела веднага (авт. Вт/Пт 10:00)
 ```
 
+**Постоянен екипаж:**
+```
+!want Sunny                        ← заявява постоянно място (изисква одобрение от Мод)
+!ship-addpermanent @user Sunny     ← директно добавя без одобрение (Мод/Админ)
+!ship-removepermanent @user        ← маха от постоянен екипаж (Мод/Админ)
+!ship-listpermanent                 ← показва всички постоянни членове (Мод/Админ)
+```
+
+```
+> 💡 **Важно за правата на Модераторите:**
+> За да могат вашите модератори да използват корабните команди и бутона за ресет **без да имат реални Администраторски права в Discord**, задължително трябва първо да настроите модераторската роля  за сървъра чрез командата:
+> `!setconfig mod_role <ID-на-ролята>`
+    > Като ролята трябва да има следните права в Discord
+        > * Преглед на канали.
+        > * Управление на роли.
+        > * С позовавания @EVERYONE, @HERE и Всички роли.
+    > Ботът автоматично ще разпознае притежателите на тази роля като оторизирани лица за управление на флота per-сървър!
+
+> 💡 Когато потребител напише `!want Sunny`, ботът изпраща заявка в `admin_log_channel` с бутони **✅ Approve** / **❌ Deny**. Мод или Админ натиска бутон и потребителят получава ЛС с резултата.
+```
 ---
 
 ### ⚙️ Repair Ship
@@ -396,9 +427,14 @@ good morning / добро утро  ← добро утро GIF
 ---
 ---
 
+
+
+---
+
 > 📌 **Важно / Important:**
 > Всичко е **per-сървър** и напълно независимо.
 > Everything is **per-server** and fully independent.
 >
 > 🔐 **Leveling, Flag Translate и Auto-Translate** се активират с парола от собственика на бота.
+> 
 > 🔐 **Leveling, Flag Translate and Auto-Translate** are activated with a password from the bot owner.
