@@ -162,6 +162,28 @@ repair @Sunny                                      ← usage (any member)
 
 ---
 
+### 🤖 AI Chat — Password Activation
+
+Disabled by default. Password provided only by the bot owner.
+
+```
+!ai-enable <password>   ← activate AI chat for THIS server
+!ai-disable             ← disable (Admin only)
+```
+
+Once enabled, **@mention the bot** anywhere to chat with it!
+
+```
+@Bot what's the strongest Devil Fruit?   ← ask anything
+@Bot tell me about the Grand Line        ← One Piece lore
+@Bot yo what's up                        ← just vibe
+```
+
+> 💡 The bot responds **in character** as a One Piece pirate — in English.
+> It remembers the last 10 messages per user during the session.
+
+---
+
 ### ⚔️ Heroes (only in unit_build_channel)
 
 ```
@@ -374,6 +396,28 @@ repair @Sunny                                      ← използване (о�
 
 ---
 
+### 🤖 AI Чат — Активиране с парола
+
+Изключен по подразбиране. Паролата се дава само от собственика на бота.
+
+```
+!ai-enable <парола>   ← активира AI чата за ТОЗИ сървър
+!ai-disable           ← спира (само Админ)
+```
+
+След активиране, **тагни бота** навсякъде за да чатиш с него!
+
+```
+@Бот what's the strongest Devil Fruit?   ← питай каквото искаш
+@Бот tell me about the Grand Line        ← One Piece лор
+@Бот yo what's up                        ← просто си говори
+```
+
+> 💡 Ботът отговаря **в роля** на One Piece пират — на английски.
+> Помни последните 10 съобщения на всеки потребител по време на сесията.
+
+---
+
 ### ⚔️ Герои (само в unit_build_channel)
 
 ```
@@ -436,6 +480,6 @@ good morning / добро утро  ← добро утро GIF
 > Всичко е **per-сървър** и напълно независимо.
 > Everything is **per-server** and fully independent.
 >
-> 🔐 **Leveling, Flag Translate и Auto-Translate** се активират с парола от собственика на бота.
+> 🔐 **Leveling, Flag Translate, Auto-Translate и AI Chat** се активират с парола от собственика на бота.
 > 
-> 🔐 **Leveling, Flag Translate and Auto-Translate** are activated with a password from the bot owner.
+> 🔐 **Leveling, Flag Translate, Auto-Translate and AI Chat** are activated with a password from the bot owner.
