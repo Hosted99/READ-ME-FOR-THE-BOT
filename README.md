@@ -1,6 +1,5 @@
-
 # 🏴‍☠️ Sailing Kingdom Bot — Наръчник / User Guide
-
+а
 ## 🇬🇧 ENGLISH
 
 ### 🚀 Getting Started — New Server Setup
@@ -16,7 +15,8 @@ Settings → Advanced → Developer Mode → right-click channel/role → **Copy
 !setconfig admin_log_channel        <id>  ← channel for mod logs + crew approvals
 !setconfig welcome_channel          <id>  ← channel for new members
 !setconfig belly_rush_channel       <id>  ← channel for the Belly Rush panel
-!setconfig belly_rush_roles_channel <id>  ← channel for !want commands
+!setconfig crew_approval_channel    <id>  ← channel for permanent crew approvals (optional)
+!setconfig belly_rush_roles_channel <id>  ← channel for ship commands only (!want, !ship-captain, etc — everything else auto-deleted)
 !setconfig reminders_channel        <id>  ← channel for reminders
 !setconfig repair_channel           <id>  ← channel for repair-ship commands
 !setconfig translator_channel       <id>  ← channel for two-way AI translator
@@ -33,6 +33,7 @@ Settings → Advanced → Developer Mode → right-click channel/role → **Copy
 !setconfig protected_users     <id1,id2>  ← protected users (IDs separated by ,)
 !setconfig bday_channel             <id>  ← birthday channel (optional)
 !setconfig bday_user                <id>  ← birthday user ID (optional)
+!setconfig blacklist_channel        <id>  ← channel for the live Belly Rush blacklist embed (optional)
 ```
 
 **3. Check what's missing:**
@@ -136,8 +137,42 @@ Hydra - @Nami @Sanji
         > * Mention @everyone, @here, and All Roles
     > The bot will automatically recognize members with this role as authorized managers for the fleet on a per-server basis!
 
-> 💡 When a user types `!want Sunny`, the bot sends a request to `admin_log_channel` with **✅ Approve** / **❌ Deny** buttons. A Mod or Admin clicks the button and the user gets a DM with the result.
+> 💡 When a user types `!want Sunny`, the bot sends a request to `crew_approval_channel` (or `admin_log_channel` if that isn't set) with **✅ Approve** / **❌ Deny** buttons. A Mod or Admin clicks the button and the user gets a DM with the result.
+
+> ⚠️ **The `belly_rush_roles_channel` accepts commands only.** Any message that isn't a `!` command (e.g. `!want`, `!ship-captain`, `!ship-list`) is auto-deleted with a warning: *"this channel is only for ship selection commands"*.
+
+> 📌 **Pinned instructions (edit-in-place, never repost):**
+> `!post-roles-info` — posts the rules card in `belly_rush_roles_channel` *(Admin)*
+> `!post-crew-info` — posts the ship-management/approval guide in `crew_approval_channel` (or `admin_log_channel` if that's not set) *(Admin)*
+> Run either command again any time to **edit** the same message with fresh text — it never creates a duplicate post, and the original post date stays untouched.
 ```
+---
+
+### 🏴‍☠️ Belly Rush Blacklist
+
+Names are stored as **plain text**, not Discord users — works even for people not in the server.
+
+```
+!black-list                              ← view the current blacklist (anyone)
+!blacklist-add Luffy123 duplicate account  ← add a name (Admin)
+!blacklist-add "Red Hair Shanks" scammer   ← use quotes for names with spaces (Admin)
+!blacklist-remove Luffy123                 ← remove a name (Admin)
+```
+
+> 💡 If `blacklist_channel` is configured, the bot keeps **one** live embed message there and edits it on every add/remove instead of spamming new posts.
+
+---
+
+### 🎂 Birthday Messages
+
+```
+!setconfig bday_channel <id>   ← channel for the birthday message
+!setconfig bday_user    <id>   ← Discord ID of the person having a birthday
+!sendbday                      ← manually send the message right now (Admin)
+```
+
+> ⚠️ There's no auto-clear — the message is sent **every day at 08:30** (Sofia time) while `bday_user` stays set. Update or overwrite it after the birthday so it doesn't repeat.
+
 ---
 
 ### ⚙️ Repair Ship
@@ -249,10 +284,10 @@ Always on — no setup needed.
 + VirusTotal
 + MetaDefender
 + Jotti's Malware 
-+ Kaspersky Threat Intelligence Portal. 
- > existing database, so brand-new domains it hasn't seen yet may pass. For specific domains you always want
++ Kaspersky Threat Intelligence Portal.
+>  existing database, so brand-new domains it hasn't seen yet may pass. For specific domains you always want
 > blocked, add them to a local denylist.
-> Requires `API_KEY` in `.env` for all APIs (without it, all links pass).
+> Requires `API_KEY` in `.env` for all of APIs (without it, all links pass).
 
 ---
 
@@ -282,7 +317,8 @@ Settings → Advanced → Developer Mode → десен клик на канал
 !setconfig admin_log_channel        <id>  ← канал за модерация логове + crew одобрения
 !setconfig welcome_channel          <id>  ← канал за нови членове
 !setconfig belly_rush_channel       <id>  ← канал за Belly Rush панела
-!setconfig belly_rush_roles_channel <id>  ← канал за !want команди
+!setconfig crew_approval_channel    <id>  ← канал за одобрения на постоянен екипаж (опционален)
+!setconfig belly_rush_roles_channel <id>  ← канал само за ship команди (!want, !ship-captain и т.н. — всичко друго се трие автоматично)
 !setconfig reminders_channel        <id>  ← канал за напомняния
 !setconfig repair_channel           <id>  ← канал за repair-ship команди
 !setconfig translator_channel       <id>  ← канал за двупосочен AI превод
@@ -299,6 +335,7 @@ Settings → Advanced → Developer Mode → десен клик на канал
 !setconfig protected_users     <id1,id2>  ← защитени потребители (ID-та с ,)
 !setconfig bday_channel             <id>  ← канал за birthday (опционален)
 !setconfig bday_user                <id>  ← user ID за birthday (опционален)
+!setconfig blacklist_channel        <id>  ← канал за живото blacklist embed (опционален)
 ```
 
 **3. Провери какво липсва:**
@@ -401,8 +438,42 @@ Hydra - @Nami @Sanji
         > * С позовавания @EVERYONE, @HERE и Всички роли.
     > Ботът автоматично ще разпознае притежателите на тази роля като оторизирани лица за управление на флота per-сървър!
 
-> 💡 Когато потребител напише `!want Sunny`, ботът изпраща заявка в `admin_log_channel` с бутони **✅ Approve** / **❌ Deny**. Мод или Админ натиска бутон и потребителят получава ЛС с резултата.
+> 💡 Когато потребител напише `!want Sunny`, ботът изпраща заявка в `crew_approval_channel` (или в `admin_log_channel`, ако той не е зададен) с бутони **✅ Approve** / **❌ Deny**. Мод или Админ натиска бутон и потребителят получава ЛС с резултата.
+
+> ⚠️ **Каналът `belly_rush_roles_channel` приема само команди.** Всяко съобщение, което не е `!` команда (напр. `!want`, `!ship-captain`, `!ship-list`), се трие автоматично с предупреждение: *"this channel is only for ship selection commands"*.
+
+> 📌 **Постоянни инструкции (редактират се на място, не се препращат наново):**
+> `!post-roles-info` — праща/обновява правилата в `belly_rush_roles_channel` *(Админ)*
+> `!post-crew-info` — праща/обновява гайда за управление на кораби + одобрения в `crew_approval_channel` (или `admin_log_channel`, ако не е зададен) *(Админ)*
+> Пускаш командата пак по всяко време, за да **редактираш** същото съобщение с нов текст — никога не създава дубликат, а датата на оригиналния пост остава непроменена.
 ```
+---
+
+### 🏴‍☠️ Belly Rush Blacklist
+
+Имената се пазят като **обикновен текст**, не Discord потребители — работи дори за хора, които не са в сървъра.
+
+```
+!black-list                              ← показва текущия blacklist (всеки)
+!blacklist-add Luffy123 duplicate account  ← добавя име (Админ)
+!blacklist-add "Red Hair Shanks" scammer   ← кавички за имена с интервали (Админ)
+!blacklist-remove Luffy123                 ← маха име (Админ)
+```
+
+> 💡 Ако е зададен `blacklist_channel`, ботът пази **едно** живо embed съобщение там и го edit-ва при всяко добавяне/махане, вместо да спамва нови постове.
+
+---
+
+### 🎂 Birthday съобщения
+
+```
+!setconfig bday_channel <id>   ← канал за birthday съобщението
+!setconfig bday_user    <id>   ← Discord ID на рождника
+!sendbday                      ← изпраща съобщението веднага ръчно (Админ)
+```
+
+> ⚠️ Няма авто-изчистване — съобщението се изпраща **всеки ден в 08:30** (София час), докато `bday_user` е зададен. Обнови/презапиши го след рождения ден, за да не се повтаря.
+
 ---
 
 ### ⚙️ Repair Ship
