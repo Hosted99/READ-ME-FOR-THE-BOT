@@ -35,6 +35,8 @@ Settings → Advanced → Developer Mode → right-click channel/role → **Copy
 !setconfig bday_user                <id>  ← birthday user ID (optional)
 !setconfig blacklist_channel        <id>  ← channel for the live Belly Rush blacklist embed (optional)
 !setconfig shipless_list_channel    <id>  ← channel for the auto-updating list of members without a ship (optional)
+!setconfig ship_status_channel      <id>  ← channel where !shipstatus always posts, regardless of where typed (optional)
+!setconfig bounty_upload_channel    <id>  ← channel where any screenshot auto-triggers a bounty update, no command needed (optional)
 ```
 
 **3. Check what's missing:**
@@ -149,8 +151,46 @@ Hydra - @Nami @Sanji
 
 > 📋 **Shipless member list (auto-updating, edit-in-place):**
 > `!post-shipless-list` — posts the list once in `shipless_list_channel` *(Admin, needs `!setconfig shipless_list_channel <channel>` first)*
-> After that it updates **automatically** — no command needed — every time a member gains or loses a ship role (button, `!ship-captain`, `!ship-addpermanent`, or a manual role change), so the list always reflects reality.
+> Set `!setconfig belly_rush_role <role>` to only show members who actually play Belly Rush — otherwise every member without a ship shows up, including people who don't participate at all.
+> After that it updates **automatically** — no command needed — every time a member gains or loses a ship role or the Belly Rush role (button, `!ship-captain`, `!ship-addpermanent`, or a manual role change), so the list always reflects reality.
+
+> 🔓 **Belly Rush category unlock instructions (edit-in-place):**
+> `!post-unlock-info` — posts the unlock steps card in `belly_rush_unlock_channel` *(Admin, needs `!setconfig belly_rush_unlock_channel <channel>` first)*
+> Run it again any time to edit the same message — it never duplicates.
 ```
+---
+
+### 📊 Ship Status (HP / Fatigue)
+
+Post a crew-status board for a ship — either manually or by letting AI read it off a screenshot. Same **edit-in-place** pattern as everything else: re-run for the same ship and it updates the existing message instead of posting a new one.
+
+```
+!shipstatus title:Sunny unit1:Mugiwara,100 unit2:Hosted,92 unit3:Akagami,33,Team 3 Fatigue -30%
+```
+
+```
+!shipstatus-image [title]   ← attach 1-8 screenshots of the crew status
+```
+
+> 💡 `!shipstatus-image` sends the screenshot(s) to AI — attach more than one if the crew doesn't fit in a single screenshot, and it merges every unit into one combined list — then shows you a **preview with ✅ Confirm / ❌ Cancel buttons** — nothing is posted or overwritten until a Mod/Admin confirms it. If the AI misreads a name or a percentage, just hit Cancel and try `!shipstatus` manually or clearer screenshots.
+> 🔒 Both commands require Mod/Admin (same as the other ship-admin commands, `mod_role` or Administrator).
+> ⚙️ Bars are rendered as text (`█████░░░░░`) inside a normal embed — not a graphic image — so it needs no extra setup and always works on Railway.
+> 📍 By default the status is posted in whichever channel you typed the command in. Set `!setconfig ship_status_channel <channel>` to always post/update in **one fixed channel** instead, no matter where the command is used.
+
+---
+
+### 📸 Bounty Auto-Detect (no command needed)
+
+If `bounty_upload_channel` is configured, **anyone** who posts a bounty screenshot in that channel gets their bounty read by AI and updated automatically — no `!setbounty` typing needed. Works with all 3 common screenshot layouts (profile card, top HUD bar, personal info panel).
+
+```
+!setconfig bounty_upload_channel <channel-id>
+```
+
+> ⚠️ **No confirmation step, no permission check** — this is intentionally fully automatic and trusts whatever number the screenshot shows (by design, for fun/convenience). It's not spoof-proof — someone could in theory fake a screenshot. If you want a review step instead, ask to have it added.
+> 🎖️ Posts the exact same "Bounty Update" embed as `!setbounty` — both share one design (`bountyEmbed.js`), including a before → after change line (e.g. "📈 +฿350,110,000") and a punchier title depending on whether the bounty went up, down, or is brand new — and assigns the same tier role.
+> ⏱️ A 30-second per-user cooldown prevents accidental spam from hammering the AI — it's not a moderation feature.
+
 ---
 
 ### 🏴‍☠️ Belly Rush Blacklist
@@ -342,6 +382,8 @@ Settings → Advanced → Developer Mode → десен клик на канал
 !setconfig bday_user                <id>  ← user ID за birthday (опционален)
 !setconfig blacklist_channel        <id>  ← канал за живото blacklist embed (опционален)
 !setconfig shipless_list_channel    <id>  ← канал за авто-обновяващия се списък с членове без кораб (опционален)
+!setconfig ship_status_channel      <id>  ← канал, в който !shipstatus винаги постира, независимо къде е писана командата (опционален)
+!setconfig bounty_upload_channel    <id>  ← канал, в който всеки скрийншот автоматично обновява bounty, без нужда от команда (опционален)
 ```
 
 **3. Провери какво липсва:**
@@ -455,9 +497,48 @@ Hydra - @Nami @Sanji
 
 > 📋 **Списък с членове без кораб (авто-обновяващ се, редактира се на място):**
 > `!post-shipless-list` — постван веднъж в `shipless_list_channel` *(Админ, нужен е първо `!setconfig shipless_list_channel <channel>`)*
-> След това се обновява **автоматично** — без команда — всеки път когато член получи или загуби ship роля (бутон, `!ship-captain`, `!ship-addpermanent`, или ръчна промяна на роля), така че списъкът винаги отразява реалността.
+> Задай `!setconfig belly_rush_role <role>`, за да се показват само хора, които реално играят Belly Rush — иначе излиза всеки член без кораб, включително хора, които изобщо не участват.
+> След това се обновява **автоматично** — без команда — всеки път когато член получи или загуби ship роля или Belly Rush ролята (бутон, `!ship-captain`, `!ship-addpermanent`, или ръчна промяна на роля), така че списъкът винаги отразява реалността.
+
+> 🔓 **Инструкции за отключване на Belly Rush категорията (редактира се на място):**
+> `!post-unlock-info` — праща картата с инструкции в `belly_rush_unlock_channel` *(Админ, нужен е първо `!setconfig belly_rush_unlock_channel <channel>`)*
+> Пускаш командата пак по всяко време, за да редактираш същото съобщение — никога не се дублира.
 ```
 ---
+
+### 📊 Ship Status (HP / Fatigue)
+
+Постваш статус табло за екипажа на кораб — ръчно или чрез AI, което го разчита от скрийншот. Работи по същия **edit-in-place** принцип — пускаш пак командата за същия кораб и тя редактира съществуващото съобщение, вместо да постне ново.
+
+```
+!shipstatus title:Sunny unit1:Mugiwara,100 unit2:Hosted,92 unit3:Akagami,33,Team 3 Fatigue -30%
+```
+
+```
+!shipstatus-image [title]   ← прикачи 1-8 скрийншота от статуса на екипажа
+```
+
+> 💡 `!shipstatus-image` праща скрийншота(ите) на AI — прикачи повече от един, ако екипажът не се събира в един скрийншот, и то ги обединява в един общ списък — после ти показва **preview с ✅ Confirm / ❌ Cancel бутони** — нищо не се поства или презаписва, докато Мод/Админ не потвърди. Ако AI-то сгреши име или процент, просто натисни Cancel и пробвай `!shipstatus` ръчно или по-ясни скрийншоти.
+> 🔒 И двете команди изискват Мод/Админ (както другите ship-admin команди — `mod_role` или Administrator).
+> ⚙️ Баровете се рендират като текст (`█████░░░░░`) в обикновен embed, не като графична картинка — затова не иска допълнителна настройка и винаги работи на Railway.
+> 📍 По подразбиране статусът се постира в канала, в който е писана командата. Задай `!setconfig ship_status_channel <channel>`, за да постира/обновява винаги в **един фиксиран канал**, независимо откъде е пусната командата.
+
+---
+
+### 📸 Bounty Auto-Detect (без команда)
+
+Ако е конфигуриран `bounty_upload_channel`, **всеки**, който постне bounty скрийншот в този канал, автоматично получава прочетено от AI и обновено bounty — без изобщо да пише `!setbounty`. Работи и с трите чести варианта на скрийншот (профилна карта, горен HUD бар, лична информация панел).
+
+```
+!setconfig bounty_upload_channel <channel-id>
+```
+
+> ⚠️ **Няма стъпка за потвърждение, няма проверка на права** — това е нарочно напълно автоматично и вярва на каквото число показва скрийншотът (по дизайн, за забавление/удобство). Не е защитено от фалшифициране — теоретично някой може да редактира снимка. Ако искаш вместо това стъпка за преглед, кажи да я добавим.
+> 🎖️ Постира точно същия "Bounty Update" embed като `!setbounty` — и двата споделят един дизайн (`bountyEmbed.js`), включително ред с промяната преди → сега (напр. "📈 +฿350,110,000") и по-драматично заглавие според това дали bounty-то се е вдигнало, спаднало, или е първото за човека — и дава същата tier роля.
+> ⏱️ 30-секунден cooldown на потребител предпазва от случаен спам към AI-то — не е модераторска мярка.
+
+---
+
 
 ### 🏴‍☠️ Belly Rush Blacklist
 
