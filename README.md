@@ -1,5 +1,230 @@
-# 🏴‍☠️ Sailing Kingdom Bot — Наръчник / User Guide
-а
+# 🏴‍☠️ Sailing Kingdom Bot — User Guide
+
+> ## 🧠 How the Bot Works / Как работи ботът
+>
+> Sailing Kingdom Bot is a **per-server Discord bot**. Each server has its own configuration, channels, roles, data and enabled features. Changes made on one server do not affect another server.
+>
+> The bot mainly works in three ways:
+>
+> **🔵 Commands** — A user types a command such as `!wanted` or `!shipstatus`, and the bot performs the requested action.
+>
+> **🟢 Automatic systems** — The bot reacts to Discord events without a command, such as new members joining, links being posted, screenshots being uploaded, or roles changing.
+>
+> **🔐 Password-protected systems** — Leveling, Flag Translate, Auto-Translate and AI Chat are disabled by default and must be activated for each server with a password provided by the bot owner.
+>
+> ### 🔄 Basic Bot Flow
+>
+> ```text
+> USER / DISCORD EVENT
+>          │
+>          ├── 🔵 !command ───────→ BOT ─────→ ACTION
+>          │
+>          ├── @Bot ──────────────→ AI CHAT
+>          │
+>          └── 🟢 Automatic Event
+>                 ├── New member
+>                 ├── Link posted
+>                 ├── Screenshot posted
+>                 └── Role changed
+>                           │
+>                           ↓
+>                          BOT
+>                           │
+>                           ↓
+>                         ACTION
+> ```
+>
+> ### 🔐 Permission Levels
+>
+> | Level | Meaning |
+> |---|---|
+> | **Everyone** | Any server member can use the feature. |
+> | **Mod** | A member with the server's configured `mod_role`, or an Administrator where specified. |
+> | **Admin** | A Discord member with Administrator permission. |
+> | **Bot Owner** | The owner of the bot. Used for password-protected feature activation. |
+>
+> ### 🧩 Feature Types
+>
+> | Icon | Type | How it works |
+> |---|---|---|
+> | 🔵 | Command | Requires a command such as `!wanted`. |
+> | 🟢 | Automatic | Triggered by an event; no command is required. |
+> | 🔐 | Password | Must first be enabled for the current server. |
+> | 🤖 | AI | Uses the bot's AI system to interpret or generate content. |
+>
+> ### 📌 Important Concepts
+>
+> **Per-server:** Configuration and feature state are independent for every Discord server.
+>
+> **Edit-in-place:** Some panels and status messages are created once and then updated instead of creating a new message every time.
+>
+> **Automatic does not always mean unrestricted:** Some automatic systems may still depend on a configured channel, API key or other setup.
+>
+> **AI actions may require confirmation:** For example, `!shipstatus-image` shows a preview and waits for a Mod/Admin to confirm before changing the ship status.
+>
+> **Configuration first:** Use `!checkconfig` to see what is configured, what is missing, and the status of supported systems.
+>
+> ### 🗺️ Recommended Setup Order
+>
+> ```text
+> 1. Enable Developer Mode
+>          ↓
+> 2. Configure channels / roles with !setconfig
+>          ↓
+> 3. Run !checkconfig
+>          ↓
+> 4. Configure optional systems you want to use
+>          ↓
+> 5. Enable password-protected features when needed
+>          ↓
+> 6. Use the commands / automatic systems
+> ```
+>
+> The sections below are the detailed command and feature reference.
+
+
+# 🏴‍☠️ Sailing Kingdom Bot — User Guide
+
+> **A complete guide for users, moderators, and administrators.**
+>
+> This guide explains not only which commands exist, but also **what the bot does, when it acts automatically, what permissions are required, and what happens after each action.**
+
+---
+
+## 🧭 Quick Navigation
+
+- [🧠 How the Bot Works](#-how-the-bot-works--как-работи-ботът)
+- [🚀 Quick Start](#-quick-start--бърз-старт)
+- [🇬🇧 English](#-english)
+- [🇧🇬 Български](#-български)
+- [🛠️ Troubleshooting](#-troubleshooting)
+- [📚 Command Reference](#-command-reference)
+
+---
+
+## 🧠 How the Bot Works / Как работи ботът
+
+### 🏗️ 1. One bot, separate server configuration
+
+Each Discord server has its **own configuration and data**.
+
+That means:
+- one server's channels, roles, crew, blacklist, bounty data, and settings do not automatically affect another server;
+- optional systems can be enabled/configured independently;
+- changing a setting on one server does not change the same setting on another server.
+
+### 🔵 2. Commands
+
+Commands are actions that a user starts manually.
+
+```text
+USER
+  │
+  └── !command
+        ↓
+       BOT
+        ↓
+   Permission check
+        ↓
+     Validation
+        ↓
+      ACTION
+```
+
+### 🟢 3. Automatic systems
+
+Some features react to Discord events without a command.
+
+```text
+DISCORD EVENT
+     │
+     ├── New member joins
+     ├── Link is posted
+     ├── Screenshot is posted
+     ├── Message is deleted
+     └── Scheduled time is reached
+              ↓
+             BOT
+              ↓
+       Automatic action
+```
+
+### 🔐 4. Password-protected systems
+
+Some optional systems require a password supplied by the bot owner.
+
+```text
+Admin
+  ↓
+!feature-enable <password>
+  ↓
+Bot verifies password
+  ↓
+Feature enabled for THIS server
+```
+
+### 🤖 5. AI-powered systems
+
+AI features can read information from messages or screenshots and then perform an action.
+
+For actions that can change server data, the guide clearly identifies whether the action is:
+- automatic;
+- confirmed by the user;
+- restricted to Moderators/Admins.
+
+### 🛡️ 6. Permission levels
+
+| Level | Typical access |
+|---|---|
+| 👤 Everyone | Normal user commands and allowed interactions |
+| 🛡️ Moderator | Moderation, crew management, bounty management, etc. |
+| 👑 Admin | Server configuration and administrative systems |
+| ☠️ Bot Owner | Bot-level secrets such as activation passwords |
+
+> **Important:** A feature being automatic does not necessarily mean that everyone can manually trigger or configure it.
+
+---
+
+## 🚀 Quick Start / Бърз старт
+
+For a new server, use this order:
+
+```text
+1. Invite the bot
+      ↓
+2. Enable Developer Mode
+      ↓
+3. Create the required channels & roles
+      ↓
+4. Run !setconfig for the needed settings
+      ↓
+5. Run !checkconfig
+      ↓
+6. Configure Moderator/Admin permissions
+      ↓
+7. Enable optional systems
+      ↓
+8. Test each system
+      ↓
+9. Use the Command Reference when needed
+```
+
+### ✅ Minimum recommended first test
+
+```text
+!checkconfig
+     ↓
+Fix ❌ missing settings
+     ↓
+Test one command
+     ↓
+Test one automatic feature
+     ↓
+Check admin_log_channel
+```
+
+---
+
 ## 🇬🇧 ENGLISH
 
 ### 🚀 Getting Started — New Server Setup
@@ -8,6 +233,7 @@
 Settings → Advanced → Developer Mode → right-click channel/role → **Copy ID**
 
 **2. Full configuration (Admin only):**
+
 ```
 !setconfig level_up_channel         <id>  ← channel for level-up messages
 !setconfig log_channel              <id>  ← channel for DB sync log
@@ -37,12 +263,15 @@ Settings → Advanced → Developer Mode → right-click channel/role → **Copy
 !setconfig shipless_list_channel    <id>  ← channel for the auto-updating list of members without a ship (optional)
 !setconfig ship_status_channel      <id>  ← channel where !shipstatus always posts, regardless of where typed (optional)
 !setconfig bounty_upload_channel    <id>  ← channel where any screenshot auto-triggers a bounty update, no command needed (optional)
+
 ```
 
 **3. Check what's missing:**
+
 ```
 !checkconfig   ← configured ✅, missing ❌, system status 🟢/🔴
 !getconfig     ← all current values
+
 ```
 
 > 💡 **Rookie** and **Player** roles are created automatically!
@@ -60,6 +289,7 @@ Disabled by default. Password provided only by the bot owner.
 !rank       ← level and progress bar (auto-deletes after 60s)
 !top        ← Top 10 most active (Admin only)
 !sync       ← manually flush XP to database (Admin only)
+
 ```
 
 ---
@@ -67,24 +297,44 @@ Disabled by default. Password provided only by the bot owner.
 ### 🌐 Translation Systems — Password Activation
 
 #### 1. Flag Reaction Translator
+
 React with a flag → translation in channel, disappears after 2 min.
+
 ```
 !translate-enable <password>   ← activate for THIS server
 !translate-disable             ← disable (Admin only)
+
 ```
+
 Supports 50+ languages. Works in **all channels**.
 
 #### 2. Auto-Translate Non-English Messages
+
 Non-English message → English translation below it. **Does not disappear.**
+
 ```
 !auto-translate-enable <password>   ← activate for THIS server
 !auto-translate-disable             ← disable (Admin only)
+
 ```
-Works in **all channels** except `#ai-translator` and admin channels.
+
+Works in **all channels** except `#ai-translator` and admin channels, plus any
+channels added to the ignore list below.
 Ignores: `!` commands, very short messages, mostly Latin text.
 
-#### 3. AI Channel Translator (#translator_channel)
+**Extra ignored channels (Admin only):**
+
+```
+!ignoretranslate-add <#channel>      ← stop auto-translating in this channel
+!ignoretranslate-remove <#channel>   ← resume auto-translating in this channel
+!ignoretranslate-list                ← show extra ignored channels
+
+```
+
+#### 3. AI Channel Translator (#translator\_channel)
+
 For conversation between people speaking different languages.
+
 - Write in **any language** → translated to English
 - Reply in English → translates back to their language
 - Remembers language for 5 hours | Cooldown: 5 seconds
@@ -105,6 +355,7 @@ mania-dm ts                ← DM everyone who hasn't voted
 mania-strategy
 Kronos - @Luffy @Zoro      ← each line = one boss
 Hydra - @Nami @Sanji
+
 ```
 
 ---
@@ -112,6 +363,7 @@ Hydra - @Nami @Sanji
 ### 🚢 Belly Rush — Ships & Crew
 
 **Ship management (Admin):**
+
 ```
 !ship-add Sunny ☀️ @mugi-role      ← add a ship
 !ship-remove Sunny                  ← remove a ship
@@ -119,14 +371,17 @@ Hydra - @Nami @Sanji
 !ship-captain @Luffy Sunny         ← set permanent captain (never reset)
 !ship-uncaptain @Luffy             ← remove captain
 !setup                             ← manually send panel (auto Tue/Fri 10:00)
+
 ```
 
 **Permanent crew:**
+
 ```
 !want Sunny                        ← request permanent spot (requires Mod approval)
 !ship-addpermanent @user Sunny     ← add directly without approval (Mod/Admin)
 !ship-removepermanent @user        ← remove from permanent crew (Mod/Admin)
 !ship-listpermanent                 ← list all permanent crew members (Mod/Admin)
+
 ```
 
 ```
@@ -157,7 +412,9 @@ Hydra - @Nami @Sanji
 > 🔓 **Belly Rush category unlock instructions (edit-in-place):**
 > `!post-unlock-info` — posts the unlock steps card in `belly_rush_unlock_channel` *(Admin, needs `!setconfig belly_rush_unlock_channel <channel>` first)*
 > Run it again any time to edit the same message — it never duplicates.
+
 ```
+
 ---
 
 ### 📊 Ship Status (HP / Fatigue)
@@ -166,10 +423,12 @@ Post a crew-status board for a ship — either manually or by letting AI read it
 
 ```
 !shipstatus title:Sunny unit1:Mugiwara,100 unit2:Hosted,92 unit3:Akagami,33,Team 3 Fatigue -30%
+
 ```
 
 ```
 !shipstatus-image [title]   ← attach 1-8 screenshots of the crew status
+
 ```
 
 > 💡 `!shipstatus-image` sends the screenshot(s) to AI — attach more than one if the crew doesn't fit in a single screenshot, and it merges every unit into one combined list — then shows you a **preview with ✅ Confirm / ❌ Cancel buttons** — nothing is posted or overwritten until a Mod/Admin confirms it. If the AI misreads a name or a percentage, just hit Cancel and try `!shipstatus` manually or clearer screenshots.
@@ -185,6 +444,7 @@ If `bounty_upload_channel` is configured, **anyone** who posts a bounty screensh
 
 ```
 !setconfig bounty_upload_channel <channel-id>
+
 ```
 
 > ⚠️ **No confirmation step, no permission check** — this is intentionally fully automatic and trusts whatever number the screenshot shows (by design, for fun/convenience). It's not spoof-proof — someone could in theory fake a screenshot. If you want a review step instead, ask to have it added.
@@ -192,6 +452,26 @@ If `bounty_upload_channel` is configured, **anyone** who posts a bounty screensh
 > ⏱️ A 30-second per-user cooldown prevents accidental spam from hammering the AI — it's not a moderation feature.
 
 ---
+
+### 🏴‍☠️ Belly Rush
+
+**How to think about this system:** Belly Rush combines configuration, ship/crew data, role management, and approval workflows. Some commands are restricted to specific channels or moderator/admin roles.
+
+**Typical flow:**
+
+```text
+Configure channels / roles
+        ↓
+Create ships
+        ↓
+Assign captains / crew
+        ↓
+Members use ship commands
+        ↓
+Bot updates roles & stored data
+        ↓
+Embeds / lists stay synchronized
+```
 
 ### 🏴‍☠️ Belly Rush Blacklist
 
@@ -202,6 +482,7 @@ Names are stored as **plain text**, not Discord users — works even for people 
 !blacklist-add Luffy123 duplicate account  ← add a name (Admin)
 !blacklist-add "Red Hair Shanks" scammer   ← use quotes for names with spaces (Admin)
 !blacklist-remove Luffy123                 ← remove a name (Admin)
+
 ```
 
 > 💡 If `blacklist_channel` is configured, the bot keeps **one** live embed message there and edits it on every add/remove instead of spamming new posts.
@@ -214,6 +495,7 @@ Names are stored as **plain text**, not Discord users — works even for people 
 !setconfig bday_channel <id>   ← channel for the birthday message
 !setconfig bday_user    <id>   ← Discord ID of the person having a birthday
 !sendbday                      ← manually send the message right now (Admin)
+
 ```
 
 > ⚠️ There's no auto-clear — the message is sent **every day at 08:30** (Sofia time) while `bday_user` stays set. Update or overwrite it after the birthday so it doesn't repeat.
@@ -223,11 +505,13 @@ Names are stored as **plain text**, not Discord users — works even for people 
 ### ⚙️ Repair Ship
 
 Only in `repair_channel`. Only `repair @ship` is allowed.
+
 ```
 !ship-addrepair Sunny {user} sails on fire!! 🔥   ← add a message
 !ship-repairs Sunny                                ← list all with IDs
 !ship-removerepair 1                               ← remove by ID
 repair @Sunny                                      ← usage (any member)
+
 ```
 
 ---
@@ -238,7 +522,22 @@ repair @Sunny                                      ← usage (any member)
 !wanted / !wanted @user              ← Wanted poster
 !setbounty @user 500000000           ← set bounty (Mod/Admin)
 !resetbounty @user                   ← reset to ฿0 (Mod/Admin)
+
 ```
+
+Every 50M crossed automatically assigns a tier role, named `Bounty: <N>M+` by
+default (e.g. `Bounty: 250M+`). The role must already exist on the server
+with that exact name, or the bot won't find it to assign.
+
+If your server's roles use a different word instead of "Bounty" (e.g.
+`RP: 250M+`), change the label with:
+
+```
+!setconfig bounty_role_label RP   ← roles become "RP: <N>M+" instead of "Bounty: <N>M+"
+
+```
+
+Defaults to `Bounty` if never set.
 
 ---
 
@@ -249,6 +548,7 @@ Disabled by default. Password provided only by the bot owner.
 ```
 !ai-enable <password>   ← activate AI chat for THIS server
 !ai-disable             ← disable (Admin only)
+
 ```
 
 Once enabled, **@mention the bot** anywhere to chat with it!
@@ -257,6 +557,7 @@ Once enabled, **@mention the bot** anywhere to chat with it!
 @Bot what's the strongest Devil Fruit?   ← ask anything
 @Bot tell me about the Grand Line        ← One Piece lore
 @Bot yo what's up                        ← just vibe
+
 ```
 
 > 💡 The bot responds **in character** as a One Piece pirate — in English.
@@ -264,12 +565,13 @@ Once enabled, **@mention the bot** anywhere to chat with it!
 
 ---
 
-### ⚔️ Heroes (only in unit_build_channel)
+### ⚔️ Heroes (only in unit\_build\_channel)
 
 ```
 !hero-list              ← all available heroes
 !hero mihawk            ← full build guide
 !hero luffy-cultiv1     ← Culti V1 variant
+
 ```
 
 ---
@@ -282,9 +584,26 @@ Once enabled, **@mention the bot** anywhere to chat with it!
 !allreminders               ← all reminders
 !delete <id>                ← delete by ID
 !cron                       ← cron format guide
+
 ```
 
 ---
+
+### 🛂 New Member Verification
+
+**Typical verification flow:**
+
+```text
+NEW MEMBER
+    ↓
+Rookie role
+    ↓
+Enters nickname with guild tag
+    ↓
+Player role
+    ↓
+Full server access
+```
 
 ### 🛂 New Member Verification
 
@@ -304,6 +623,7 @@ Once enabled, **@mention the bot** anywhere to chat with it!
 !removerole @user Role     ← remove a role
 !addroleallts @role        ← give role to everyone with ᐪˢ☠️
 !addroleallgm @role        ← give role to everyone with ᴳᴹ☠️
+
 ```
 
 ---
@@ -313,37 +633,129 @@ Once enabled, **@mention the bot** anywhere to chat with it!
 ```
 good night / nighty night  ← bot replies with a good night GIF
 good morning / добро утро  ← bot replies with a random good morning GIF
+
 ```
 
 ---
 
 ### 🛡️ Link / Phishing Protection (Automatic)
 
+**Typical flow:**
+
+```text
+Message containing a link
+          ↓
+       Bot scans
+          ↓
+   ┌──────┴──────┐
+   ↓             ↓
+   Safe       Malicious
+   ↓             ↓
+Keep/repost   Delete + warn
+                 ↓
+             Admin log
+```
+
+### 🛡️ Link / Phishing Protection (Automatic)
+
 Always on — no setup needed.
+
 - Every message containing a link is scanned via the VirusTotal API.
 - **Safe links** are kept (re-posted via webhook under the user's name).
 - **Malicious / phishing links** are deleted instantly and the user is warned.
 - Threat alerts are logged to `admin_log_channel`.
 
-> ⚠️ Note: detection relies on: 
-+ VirusTotal
-+ MetaDefender
-+ Jotti's Malware 
-+ Kaspersky Threat Intelligence Portal.
->  existing database, so brand-new domains it hasn't seen yet may pass. For specific domains you always want
+> ⚠️ Note: detection relies on:
+
+- VirusTotal
+- MetaDefender
+- Jotti's Malware
+- Kaspersky Threat Intelligence Portal.
+
+> Detection depends on the configured scanning services and their existing databases, so brand-new domains may pass. For specific domains you always want
 > blocked, add them to a local denylist.
-> Requires `API_KEY` in `.env` for all of APIs (without it, all links pass).
+> The configured scanning services require their corresponding API configuration in `.env`. If the required configuration is missing, link scanning may not work as intended.
 
 ---
 
 ### 🗑️ Moderation Logging (Automatic)
 
 Logged to `admin_log_channel`.
+
 - **Deleted messages** — author, who deleted it (via Audit Log), channel, content, attachments, original timestamp.
 - **Bulk deletes** — a `.txt` file with all deleted messages + who did it.
 - **Bans & timeouts** — responsible mod, target, reason, duration.
 
 > 💡 The bot needs the **View Audit Log** permission to detect *who* deleted a message. Self-deletes create no audit entry (Discord limitation), so they show as "self / unknown".
+
+---
+
+## 🛠️ Troubleshooting / Отстраняване на проблеми
+
+### Bot does not respond
+1. Check that the bot can **View Channel**, **Send Messages**, and **Read Message History**.
+2. Check the channel restriction for that feature.
+3. Run `!checkconfig`.
+4. Check `admin_log_channel` for errors or system messages.
+
+### A command says the channel is wrong
+Some systems intentionally allow commands only in their configured channel, such as:
+- `repair_channel`
+- `unit_build_channel`
+- `belly_rush_roles_channel`
+
+Move the command to the correct channel instead of changing permissions unnecessarily.
+
+### A role is not assigned
+Check:
+- the role exists;
+- the bot's role is high enough in the Discord role hierarchy;
+- the configured role ID/name is correct;
+- the bot has **Manage Roles**.
+
+### An automatic feature does nothing
+Check:
+- the feature's required channel is configured;
+- the bot can read messages and attachments there;
+- required API/AI configuration is present;
+- the event matches the feature's documented trigger;
+- cooldowns or other limits have not been reached.
+
+### Bounty tier role is missing
+The role must exist with the expected name, or with the configured `bounty_role_label`.
+
+Example:
+
+```text
+Bounty: 250M+
+```
+
+or, if configured:
+
+```text
+RP: 250M+
+```
+
+### AI screenshot result is wrong
+Use a clearer screenshot and follow the documented confirmation step where available. Remember that screenshot recognition is not guaranteed to be perfect.
+
+### Where should an administrator look first?
+
+```text
+Problem
+  ↓
+!checkconfig
+  ↓
+Discord permissions
+  ↓
+Correct channel
+  ↓
+Correct role hierarchy
+  ↓
+API / AI configuration
+  ↓
+admin_log_channel
+```
 
 ---
 
@@ -355,6 +767,7 @@ Logged to `admin_log_channel`.
 Settings → Advanced → Developer Mode → десен клик на канал/роля → **Copy ID**
 
 **2. Пълна конфигурация (само Админ):**
+
 ```
 !setconfig level_up_channel         <id>  ← канал за level-up съобщения
 !setconfig log_channel              <id>  ← канал за XP логове
@@ -384,12 +797,15 @@ Settings → Advanced → Developer Mode → десен клик на канал
 !setconfig shipless_list_channel    <id>  ← канал за авто-обновяващия се списък с членове без кораб (опционален)
 !setconfig ship_status_channel      <id>  ← канал, в който !shipstatus винаги постира, независимо къде е писана командата (опционален)
 !setconfig bounty_upload_channel    <id>  ← канал, в който всеки скрийншот автоматично обновява bounty, без нужда от команда (опционален)
+
 ```
 
 **3. Провери какво липсва:**
+
 ```
 !checkconfig   ← конфигурирано ✅, липсващо ❌, статус на системите 🟢/🔴
 !getconfig     ← всички текущи стойности
+
 ```
 
 > 💡 **Rookie** и **Player** ролите се създават автоматично!
@@ -407,6 +823,7 @@ Settings → Advanced → Developer Mode → десен клик на канал
 !rank       ← ниво и прогрес бар (изчезва след 60 сек)
 !top        ← Топ 10 най-активни (само Админ)
 !sync       ← ръчно запазване (само Админ)
+
 ```
 
 ---
@@ -414,24 +831,44 @@ Settings → Advanced → Developer Mode → десен клик на канал
 ### 🌐 Преводни системи — Активиране с парола
 
 #### 1. Флаг реакция превод
+
 Реагираш с флаг → превод в канала, изчезва след 2 мин.
+
 ```
 !translate-enable <парола>   ← активира за ТОЗИ сървър
 !translate-disable           ← спира (само Админ)
+
 ```
+
 Поддържа 50+ езика. Работи в **всички канали**.
 
 #### 2. Авто-превод на не-английски съобщения
+
 Не-английско съобщение → превод на английски под него. **Не изчезва.**
+
 ```
 !auto-translate-enable <парола>   ← активира за ТОЗИ сървър
 !auto-translate-disable           ← спира (само Админ)
+
 ```
-Работи в **всички канали** освен `#ai-translator` и admin канали.
+
+Работи в **всички канали** освен `#ai-translator` и admin канали, плюс всеки
+канал, добавен в списъка с игнорирани канали по-долу.
 Игнорира: команди с `!`, много кратки съобщения, предимно латински текст.
 
-#### 3. AI Канален преводач (#translator_channel)
+**Допълнителни игнорирани канали (само Админ):**
+
+```
+!ignoretranslate-add <#канал>      ← спира авто-превода в този канал
+!ignoretranslate-remove <#канал>   ← връща авто-превода в този канал
+!ignoretranslate-list              ← показва допълнителните игнорирани канали
+
+```
+
+#### 3. AI Канален преводач (#translator\_channel)
+
 За разговор между хора на различни езици.
+
 - Пишеш на **всякакъв език** → превод на английски
 - Отговаряш на английски → превод обратно на езика му
 - Помни езика 5 часа | Cooldown: 5 сек
@@ -452,6 +889,7 @@ mania-dm ts                ← DM на незагласувалите
 mania-strategy
 Kronos - @Luffy @Zoro      ← всеки ред = един бос
 Hydra - @Nami @Sanji
+
 ```
 
 ---
@@ -459,6 +897,7 @@ Hydra - @Nami @Sanji
 ### 🚢 Belly Rush — Кораби и екипаж
 
 **Управление на кораби (Админ):**
+
 ```
 !ship-add Sunny ☀️ @mugi-role      ← добавя кораб
 !ship-remove Sunny                  ← маха кораб
@@ -466,14 +905,17 @@ Hydra - @Nami @Sanji
 !ship-captain @Luffy Sunny         ← постоянен капитан (не се ресетва)
 !ship-uncaptain @Luffy             ← маха капитан
 !setup                             ← изпраща панела веднага (авт. Вт/Пт 10:00)
+
 ```
 
 **Постоянен екипаж:**
+
 ```
 !want Sunny                        ← заявява постоянно място (изисква одобрение от Мод)
 !ship-addpermanent @user Sunny     ← директно добавя без одобрение (Мод/Админ)
 !ship-removepermanent @user        ← маха от постоянен екипаж (Мод/Админ)
 !ship-listpermanent                 ← показва всички постоянни членове (Мод/Админ)
+
 ```
 
 ```
@@ -487,6 +929,27 @@ Hydra - @Nami @Sanji
     > Ботът автоматично ще разпознае притежателите на тази роля като оторизирани лица за управление на флота per-сървър!
 
 > 💡 Когато потребител напише `!want Sunny`, ботът изпраща заявка в `crew_approval_channel` (или в `admin_log_channel`, ако той не е зададен) с бутони **✅ Approve** / **❌ Deny**. Мод или Админ натиска бутон и потребителят получава ЛС с резултата.
+
+**🔄 Crew Approval Flow:**
+
+```text
+USER
+  │
+  └── !want Sunny
+          ↓
+Crew Approval Channel
+          ↓
+   ┌───────────────┐
+   │ ✅ Approve    │
+   │ ❌ Deny       │
+   └───────────────┘
+       ↓       ↓
+   APPROVED   DENIED
+       ↓       ↓
+  Crew Role     DM
+       │
+       └──────→ DM result
+```
 
 > ⚠️ **Каналът `belly_rush_roles_channel` приема само команди.** Всяко съобщение, което не е `!` команда (напр. `!want`, `!ship-captain`, `!ship-list`), се трие автоматично с предупреждение: *"this channel is only for ship selection commands"*.
 
@@ -503,7 +966,9 @@ Hydra - @Nami @Sanji
 > 🔓 **Инструкции за отключване на Belly Rush категорията (редактира се на място):**
 > `!post-unlock-info` — праща картата с инструкции в `belly_rush_unlock_channel` *(Админ, нужен е първо `!setconfig belly_rush_unlock_channel <channel>`)*
 > Пускаш командата пак по всяко време, за да редактираш същото съобщение — никога не се дублира.
+
 ```
+
 ---
 
 ### 📊 Ship Status (HP / Fatigue)
@@ -512,13 +977,32 @@ Hydra - @Nami @Sanji
 
 ```
 !shipstatus title:Sunny unit1:Mugiwara,100 unit2:Hosted,92 unit3:Akagami,33,Team 3 Fatigue -30%
+
 ```
 
 ```
 !shipstatus-image [title]   ← прикачи 1-8 скрийншота от статуса на екипажа
+
 ```
 
-> 💡 `!shipstatus-image` праща скрийншота(ите) на AI — прикачи повече от един, ако екипажът не се събира в един скрийншот, и то ги обединява в един общ списък — после ти показва **preview с ✅ Confirm / ❌ Cancel бутони** — нищо не се поства или презаписва, докато Мод/Админ не потвърди. Ако AI-то сгреши име или процент, просто натисни Cancel и пробвай `!shipstatus` ръчно или по-ясни скрийншоти.
+> 💡 `!shipstatus-image` праща скрийншота(ите) на AI — прикачи повече от един, ако екипажът не се събира в един скрийншот, и то ги обединява в един общ списък — после ти показва **preview с ✅ Confirm / ❌ Cancel бутони** — нищо не се поства или презаписва, докато Мод/Админ не потвърди.
+
+**🔄 AI Screenshot Flow:**
+
+```text
+1–8 SCREENSHOTS
+       ↓
+      AI
+       ↓
+Reads names / HP / Fatigue
+       ↓
+   PREVIEW
+   ↙     ↘
+Confirm   Cancel
+   ↓         ↓
+Update     Nothing changes
+status
+``` Ако AI-то сгреши име или процент, просто натисни Cancel и пробвай `!shipstatus` ръчно или по-ясни скрийншоти.
 > 🔒 И двете команди изискват Мод/Админ (както другите ship-admin команди — `mod_role` или Administrator).
 > ⚙️ Баровете се рендират като текст (`█████░░░░░`) в обикновен embed, не като графична картинка — затова не иска допълнителна настройка и винаги работи на Railway.
 > 📍 По подразбиране статусът се постира в канала, в който е писана командата. Задай `!setconfig ship_status_channel <channel>`, за да постира/обновява винаги в **един фиксиран канал**, независимо откъде е пусната командата.
@@ -531,6 +1015,7 @@ Hydra - @Nami @Sanji
 
 ```
 !setconfig bounty_upload_channel <channel-id>
+
 ```
 
 > ⚠️ **Няма стъпка за потвърждение, няма проверка на права** — това е нарочно напълно автоматично и вярва на каквото число показва скрийншотът (по дизайн, за забавление/удобство). Не е защитено от фалшифициране — теоретично някой може да редактира снимка. Ако искаш вместо това стъпка за преглед, кажи да я добавим.
@@ -538,7 +1023,6 @@ Hydra - @Nami @Sanji
 > ⏱️ 30-секунден cooldown на потребител предпазва от случаен спам към AI-то — не е модераторска мярка.
 
 ---
-
 
 ### 🏴‍☠️ Belly Rush Blacklist
 
@@ -549,6 +1033,7 @@ Hydra - @Nami @Sanji
 !blacklist-add Luffy123 duplicate account  ← добавя име (Админ)
 !blacklist-add "Red Hair Shanks" scammer   ← кавички за имена с интервали (Админ)
 !blacklist-remove Luffy123                 ← маха име (Админ)
+
 ```
 
 > 💡 Ако е зададен `blacklist_channel`, ботът пази **едно** живо embed съобщение там и го edit-ва при всяко добавяне/махане, вместо да спамва нови постове.
@@ -561,6 +1046,7 @@ Hydra - @Nami @Sanji
 !setconfig bday_channel <id>   ← канал за birthday съобщението
 !setconfig bday_user    <id>   ← Discord ID на рождника
 !sendbday                      ← изпраща съобщението веднага ръчно (Админ)
+
 ```
 
 > ⚠️ Няма авто-изчистване — съобщението се изпраща **всеки ден в 08:30** (София час), докато `bday_user` е зададен. Обнови/презапиши го след рождения ден, за да не се повтаря.
@@ -570,11 +1056,13 @@ Hydra - @Nami @Sanji
 ### ⚙️ Repair Ship
 
 Само в `repair_channel`. Само `repair @ship` е разрешено.
+
 ```
 !ship-addrepair Sunny {user} sails on fire!! 🔥   ← добавя съобщение
 !ship-repairs Sunny                                ← показва всички с ID-та
 !ship-removerepair 1                               ← маха по ID
 repair @Sunny                                      ← използване (от всеки)
+
 ```
 
 ---
@@ -585,7 +1073,22 @@ repair @Sunny                                      ← използване (о�
 !wanted / !wanted @user              ← Wanted плакат
 !setbounty @user 500000000           ← задава bounty (Мод/Админ)
 !resetbounty @user                   ← нулира до ฿0 (Мод/Админ)
+
 ```
+
+При всеки 50M bounty автоматично се дава tier роля, наречена по подразбиране
+`Bounty: <N>M+` (напр. `Bounty: 250M+`). Ролята трябва вече да съществува на
+сървъра с точно това име, иначе ботът няма да я намери, за да я даде.
+
+Ако ролите на твоя сървър използват друга дума вместо "Bounty" (напр.
+`RP: 250M+`), смени думата с:
+
+```
+!setconfig bounty_role_label RP   ← ролите стават "RP: <N>M+" вместо "Bounty: <N>M+"
+
+```
+
+По подразбиране е `Bounty`, ако никога не е задавано.
 
 ---
 
@@ -596,6 +1099,7 @@ repair @Sunny                                      ← използване (о�
 ```
 !ai-enable <парола>   ← активира AI чата за ТОЗИ сървър
 !ai-disable           ← спира (само Админ)
+
 ```
 
 След активиране, **тагни бота** навсякъде за да чатиш с него!
@@ -604,6 +1108,7 @@ repair @Sunny                                      ← използване (о�
 @Бот what's the strongest Devil Fruit?   ← питай каквото искаш
 @Бот tell me about the Grand Line        ← One Piece лор
 @Бот yo what's up                        ← просто си говори
+
 ```
 
 > 💡 Ботът отговаря **в роля** на One Piece пират — на английски.
@@ -611,12 +1116,13 @@ repair @Sunny                                      ← използване (о�
 
 ---
 
-### ⚔️ Герои (само в unit_build_channel)
+### ⚔️ Герои (само в unit\_build\_channel)
 
 ```
 !hero-list              ← всички герои
 !hero mihawk            ← пълен билд
 !hero luffy-cultiv1     ← Culti V1 вариант
+
 ```
 
 ---
@@ -629,6 +1135,7 @@ repair @Sunny                                      ← използване (о�
 !allreminders               ← всички напомняния
 !delete <id>                ← изтрива по ID
 !cron                       ← наръчник за cron формата
+
 ```
 
 ---
@@ -638,6 +1145,22 @@ repair @Sunny                                      ← използване (о�
 1. Нов потребител → **Rookie** роля (автоматично)
 2. Натиска **"Nickname"** → въвежда nickname с гилдиен таг
 3. Получава **Player** роля и достъп
+
+**🔄 Flow:**
+
+```text
+NEW MEMBER
+    ↓
+Rookie Role
+    ↓
+Clicks "Nickname"
+    ↓
+Enters nickname with guild tag
+    ↓
+Player Role
+    ↓
+Full Server Access
+```
 
 ---
 
@@ -651,6 +1174,7 @@ repair @Sunny                                      ← използване (о�
 !removerole @user Роля     ← маха роля
 !addroleallts @роля        ← дава роля на всички с ᐪˢ☠️
 !addroleallgm @роля        ← дава роля на всички с ᴳᴹ☠️
+
 ```
 
 ---
@@ -660,6 +1184,7 @@ repair @Sunny                                      ← използване (о�
 ```
 good night / nighty night  ← лека нощ GIF
 good morning / добро утро  ← добро утро GIF
+
 ```
 
 ---
@@ -667,6 +1192,7 @@ good morning / добро утро  ← добро утро GIF
 ### 🛡️ Защита от линкове / фишинг (автоматична)
 
 Винаги включена — без настройка.
+
 - Всяко съобщение с линк се проверява през VirusTotal API.
 - **Безопасните линкове** остават (препращат се през webhook от името на потребителя).
 - **Зловредните / фишинг линкове** се трият веднага и потребителят се предупреждава.
@@ -680,6 +1206,7 @@ good morning / добро утро  ← добро утро GIF
 ### 🗑️ Логване на модерация (автоматично)
 
 Логва се в `admin_log_channel`.
+
 - **Изтрити съобщения** — автор, кой го е изтрил (през Audit Log), канал, съдържание, прикачени файлове, време на пращане.
 - **Масово триене** — `.txt` файл с всички изтрити съобщения + кой го е направил.
 - **Банове и тайм-аути** — отговорен модератор, цел, причина, продължителност.
@@ -687,9 +1214,8 @@ good morning / добро утро  ← добро утро GIF
 > 💡 Ботът трябва да има право **View Audit Log**, за да засича *кой* е изтрил съобщение. При самостоятелно триене Discord не прави запис, така че се показва „сам / неизвестно".
 
 ---
+
 ---
-
-
 
 ---
 
@@ -698,5 +1224,31 @@ good morning / добро утро  ← добро утро GIF
 > Everything is **per-server** and fully independent.
 >
 > 🔐 **Leveling, Flag Translate, Auto-Translate и AI Chat** се активират с парола от собственика на бота.
-> 
+>
 > 🔐 **Leveling, Flag Translate, Auto-Translate and AI Chat** are activated with a password from the bot owner.
+
+
+## 📚 Command Reference
+
+Use the detailed sections above for full explanations. This list is a quick lookup of the bot's command families.
+
+| Command family | Purpose |
+|---|---|
+| `!setconfig` / `!checkconfig` / `!getconfig` | Server configuration |
+| `!leveling-*` / `!rank` / `!top` / `!sync` | Leveling & XP |
+| `!mania-*` | Mania tools |
+| `!ship-*` / `!setup` / `!want` | Belly Rush |
+| `!shipstatus*` | Ship status |
+| `!blacklist-*` / `!black-list` | Belly Rush blacklist |
+| `!wanted` / `!setbounty` / `!resetbounty` | Bounty |
+| `!ai-enable` / `!ai-disable` | AI chat |
+| `!hero*` | Hero builds |
+| `!remind` / `!reminders` / `!allreminders` / `!delete` | Reminders |
+| `!clear` / `!say` / `!sendto` / `!addrole` / `!removerole` | Moderation |
+| `!sendbday` | Birthday message |
+| `!ship-addrepair` / `!ship-repairs` / `!ship-removerepair` | Repair Ship |
+
+> 💡 **Rule of thumb:** If you are unsure whether a command is allowed for you or where it should be used, open the relevant feature section above first. It explains the permissions, channel restrictions, and automatic behavior.
+
+---
+
