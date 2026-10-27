@@ -363,6 +363,15 @@ Hydra - @Nami @Sanji
 
 ### 🚢 Belly Rush — Ships & Crew
 
+**Ship system switch (Admin, per server):** the whole ship system is **on by default**. If your server does not use ships (for example a global game server), turn it off:
+
+```
+!ship-disable   ← turn the ship system OFF for THIS server
+!ship-enable    ← turn it back ON
+```
+
+When it is OFF: all `!ship-*`, `!want`, `!setup` and `!shipstatus*` commands are blocked, the Tue/Fri Belly Rush panel is not posted, the repair / ship-roles channels are no longer moderated, and the bot stops tracking ship roles (which also saves database wake-ups). `!checkconfig` shows it as `ship_system`.
+
 **Ship management (Admin):**
 
 ```
@@ -957,6 +966,15 @@ Hydra - @Nami @Sanji
 
 ### 🚢 Belly Rush — Кораби и екипаж
 
+**Превключвател на корабната система (Админ, за всеки сървър):** цялата корабна система е **включена по подразбиране**. Ако сървърът ти не ползва кораби (например глобален сървър на играта), изключи я:
+
+```
+!ship-disable   ← ИЗКЛЮЧВА корабната система за ТОЗИ сървър
+!ship-enable    ← включва я пак
+```
+
+Когато е ИЗКЛЮЧЕНА: всички `!ship-*`, `!want`, `!setup` и `!shipstatus*` команди са блокирани, панелът на Belly Rush (Вт/Пт) не се праща, repair и ship-roles каналите вече не се модерират, а ботът спира да следи корабните роли (което пести и събуждания на базата). `!checkconfig` я показва като `ship_system`.
+
 **Управление на кораби (Админ):**
 
 ```
@@ -1358,6 +1376,7 @@ Use the detailed sections above for full explanations. This list is a quick look
 | `!leveling-*` / `!rank` / `!top` / `!sync` | Leveling & XP |
 | `!mania-*` | Mania tools |
 | `!ship-*` / `!setup` / `!want` | Belly Rush |
+| `!ship-enable` / `!ship-disable` | Ship system on/off per server (Admin) |
 | `!shipstatus*` | Ship status |
 | `!blacklist-*` / `!black-list` | Belly Rush blacklist |
 | `!wanted` / `!setbounty` / `!resetbounty` | Bounty |
@@ -1373,4 +1392,3 @@ Use the detailed sections above for full explanations. This list is a quick look
 > 💡 **Rule of thumb:** If you are unsure whether a command is allowed for you or where it should be used, open the relevant feature section above first. It explains the permissions, channel restrictions, and automatic behavior.
 
 ---
-
