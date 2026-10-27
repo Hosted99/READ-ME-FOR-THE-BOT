@@ -51,6 +51,7 @@
 > | 🟢 | Automatic | Triggered by an event; no command is required. |
 > | 🔐 | Password | Must first be enabled for the current server. |
 > | 🤖 | AI | Uses the bot's AI system to interpret or generate content. |
+> | 🔘 | Switch | An Administrator turns it on or off for the server with a command (no password needed). |
 >
 > ### 📌 Important Concepts
 >
@@ -269,7 +270,7 @@ Settings → Advanced → Developer Mode → right-click channel/role → **Copy
 **3. Check what's missing:**
 
 ```
-!checkconfig   ← configured ✅, missing ❌, system status 🟢/🔴
+!checkconfig   ← configured ✅, missing ❌, system status 🟢/🔴 (leveling, translate, AI chat, link scan, @everyone guard)
 !getconfig     ← all current values
 
 ```
@@ -450,6 +451,7 @@ If `bounty_upload_channel` is configured, **anyone** who posts a bounty screensh
 > ⚠️ **No confirmation step, no permission check** — this is intentionally fully automatic and trusts whatever number the screenshot shows (by design, for fun/convenience). It's not spoof-proof — someone could in theory fake a screenshot. If you want a review step instead, ask to have it added.
 > 🎖️ Posts the exact same "Bounty Update" embed as `!setbounty` — both share one design (`bountyEmbed.js`), including a before → after change line (e.g. "📈 +฿350,110,000") and a punchier title depending on whether the bounty went up, down, or is brand new — and assigns the same tier role.
 > ⏱️ A 30-second per-user cooldown prevents accidental spam from hammering the AI — it's not a moderation feature.
+> 🔁 If the AI service is temporarily overloaded (e.g. HTTP 503), the bot retries automatically, switches to a backup model if needed, and only then asks the user to re-upload the screenshot. A temporary failure does **not** use up the cooldown, so the user can try again right away.
 
 ---
 
@@ -658,23 +660,76 @@ Keep/repost   Delete + warn
 
 ### 🛡️ Link / Phishing Protection (Automatic)
 
-Always on — no setup needed.
+**On by default** — no setup needed (an Administrator can switch it off for a server, see below).
 
 - Every message containing a link is scanned via the VirusTotal API.
 - **Safe links** are kept (re-posted via webhook under the user's name).
 - **Malicious / phishing links** are deleted instantly and the user is warned.
 - Threat alerts are logged to `admin_log_channel`.
+- Links from trusted GIF sites (currently `klipy`) are never scanned.
 
-> ⚠️ Note: detection relies on:
+**Link scanner switch (Admin only):**
 
-- VirusTotal
-- MetaDefender
-- Jotti's Malware
-- Kaspersky Threat Intelligence Portal.
+```
+!linkscan-disable   ← turn the link scanner OFF for THIS server
+!linkscan-enable    ← turn it back ON
+!linkscan-status    ← show if it is ON, and warn if VIRUSTOTAL_API_KEY is missing
+```
+
+When it is OFF, messages with links are simply left alone — not deleted, not scanned and not re-posted. `!checkconfig` shows the state as `link_scan`.
+
+> 💡 Free VirusTotal accounts allow only about **4 checks per minute and 500 per day**. On a very busy server this limit can be reached, and links are then let through without a result. On large servers you may prefer to switch the scanner off.
+
+> ⚠️ Note: detection relies on the **VirusTotal** database.
 
 > Detection depends on the configured scanning services and their existing databases, so brand-new domains may pass. For specific domains you always want
 > blocked, add them to a local denylist.
 > The configured scanning services require their corresponding API configuration in `.env`. If the required configuration is missing, link scanning may not work as intended.
+
+---
+
+### 🛡️ @everyone Scam Guard (Optional)
+
+Protects the server from hacked accounts that spam scam messages with an `@everyone` ping — fake casinos, crypto giveaways, fake "withdrawal successful" screenshots, free Nitro and similar. **Off by default** — an Administrator turns it on for each server.
+
+```
+!everyoneguard-enable        ← turn the guard ON for THIS server
+!everyoneguard-disable       ← turn it OFF
+!everyoneguard-ai-enable     ← ALSO let AI check @everyone messages that contain images
+!everyoneguard-ai-disable    ← turn the AI image check OFF (the guard itself stays on)
+!everyoneguard-status        ← show what is ON/OFF and whether the bot has the needed permissions
+
+```
+
+**What happens to an `@everyone` / `@here` message:**
+
+```text
+Message with @everyone / @here
+            ↓
+Author is an Admin or has mod_role?  ── yes ──→ ignored
+            ↓ no
+Quick check (scam words, unknown links, images)
+   ├── clearly a scam ───────────────┐
+   ├── looks fine ──→ left alone     │
+   └── not clear + has image(s) ──→ AI check (only if enabled)
+                                     ↓
+                      Scam, and AI is at least 80% sure?
+                                     ↓ yes
+              1. message deleted
+              2. author timed out for 24 hours
+              3. warning in the channel (disappears after 15 s)
+              4. DM to the server owner + every Administrator
+              5. log entry in admin_log_channel
+```
+
+- A normal ping such as "@everyone who wants to play tonight?" is **ignored** — nobody is punished just for pinging.
+- The quick check adds points for scam words (casino, promo code, withdrawal, crypto, giveaway, free Nitro, "claim"…), links to unknown sites and several images at once. From **3 points** the message is removed. One ordinary screenshot is **not** removed.
+- **AI image check (optional):** if an `@everyone` message contains image(s) and the quick check did not flag it, the images are read by AI. The message is removed only when the AI is at least **80% sure** it is a scam. Messages without images are never sent to the AI. If the AI is unavailable, nothing happens. It uses the same `GEMINI_API_KEY` as the bounty reader and is limited to one check per user every 20 seconds and 30 per server per hour.
+- Administrators and members with `mod_role` are never checked.
+- The DM and the log contain the user, channel, the full message, the action taken and the reason it was flagged.
+
+> ⚠️ The bot needs **Manage Messages** and **Moderate Members (Timeout)**, and its role must be **above** the member's roles. If the timeout fails, the message is still deleted and the admins are told. `!everyoneguard-status` shows if something is missing.
+> 💡 If a member's account was hacked: tell them to change their password, enable 2FA and remove unknown apps in *Discord → Authorized Apps*. Once the account is safe, remove the timeout manually (right-click the member → *Remove Timeout*).
 
 ---
 
@@ -738,6 +793,12 @@ RP: 250M+
 
 ### AI screenshot result is wrong
 Use a clearer screenshot and follow the documented confirmation step where available. Remember that screenshot recognition is not guaranteed to be perfect.
+
+### A message with a link disappeared and came back (or I don't want link scanning)
+This is the link scanner: the message is deleted, checked with VirusTotal and re-posted under the user's name. Attachments and replies are not carried over to the re-posted message. To stop it on a server, use `!linkscan-disable`. If links are never checked, run `!linkscan-status` — it warns when `VIRUSTOTAL_API_KEY` is missing.
+
+### Someone was timed out after pinging @everyone
+That is the @everyone Scam Guard (if it is enabled with `!everyoneguard-enable`). Check `admin_log_channel` or your DMs for the reason it was flagged. If it was a mistake, remove the timeout manually and consider `!everyoneguard-disable` or leaving the AI check off. `!everyoneguard-status` shows the current state.
 
 ### Where should an administrator look first?
 
@@ -803,7 +864,7 @@ Settings → Advanced → Developer Mode → десен клик на канал
 **3. Провери какво липсва:**
 
 ```
-!checkconfig   ← конфигурирано ✅, липсващо ❌, статус на системите 🟢/🔴
+!checkconfig   ← конфигурирано ✅, липсващо ❌, статус на системите 🟢/🔴 (leveling, превод, AI чат, проверка на линкове, @everyone защита)
 !getconfig     ← всички текущи стойности
 
 ```
@@ -1021,6 +1082,7 @@ status
 > ⚠️ **Няма стъпка за потвърждение, няма проверка на права** — това е нарочно напълно автоматично и вярва на каквото число показва скрийншотът (по дизайн, за забавление/удобство). Не е защитено от фалшифициране — теоретично някой може да редактира снимка. Ако искаш вместо това стъпка за преглед, кажи да я добавим.
 > 🎖️ Постира точно същия "Bounty Update" embed като `!setbounty` — и двата споделят един дизайн (`bountyEmbed.js`), включително ред с промяната преди → сега (напр. "📈 +฿350,110,000") и по-драматично заглавие според това дали bounty-то се е вдигнало, спаднало, или е първото за човека — и дава същата tier роля.
 > ⏱️ 30-секунден cooldown на потребител предпазва от случаен спам към AI-то — не е модераторска мярка.
+> 🔁 Ако AI услугата е временно претоварена (напр. HTTP 503), ботът опитва автоматично пак, минава на резервен модел при нужда и чак тогава моли потребителя да качи снимката отново. Временна грешка **не** изразходва cooldown-а, така че човек може да опита веднага пак.
 
 ---
 
@@ -1191,15 +1253,73 @@ good morning / добро утро  ← добро утро GIF
 
 ### 🛡️ Защита от линкове / фишинг (автоматична)
 
-Винаги включена — без настройка.
+**Включена по подразбиране** — без настройка (Администратор може да я изключи за сървъра, виж по-долу).
 
 - Всяко съобщение с линк се проверява през VirusTotal API.
 - **Безопасните линкове** остават (препращат се през webhook от името на потребителя).
 - **Зловредните / фишинг линкове** се трият веднага и потребителят се предупреждава.
 - Заплахите се логват в `admin_log_channel`.
+- Линкове от доверени GIF сайтове (в момента `klipy`) никога не се проверяват.
+
+**Превключвател на проверката на линкове (само Админ):**
+
+```
+!linkscan-disable   ← ИЗКЛЮЧВА проверката на линкове за ТОЗИ сървър
+!linkscan-enable    ← включва я пак
+!linkscan-status    ← показва дали е включена и предупреждава, ако липсва VIRUSTOTAL_API_KEY
+```
+
+Когато е ИЗКЛЮЧЕНА, съобщенията с линкове просто се оставят — не се трият, не се проверяват и не се препращат наново. `!checkconfig` показва състоянието като `link_scan`.
+
+> 💡 Безплатният акаунт във VirusTotal позволява само около **4 проверки в минута и 500 на ден**. На много активен сървър този лимит може да се изчерпи и тогава линковете минават без резултат. На големи сървъри може да предпочетеш да изключиш проверката.
 
 > ⚠️ Засичането разчита на базата на VirusTotal, така че съвсем нови домейни, които още не е виждал, може да минат. За конкретни домейни, които винаги искаш блокирани, се добавя локална денлиста.
 > Изисква `VIRUSTOTAL_API_KEY` в `.env` (без него всички линкове минават).
+
+---
+
+### 🛡️ Защита от @everyone скам (по избор)
+
+Пази сървъра от хакнати акаунти, които спамят скам съобщения с `@everyone` — фалшиви казина, крипто giveaway-и, фалшиви „withdrawal successful" скрийншоти, безплатен Nitro и подобни. **Изключена по подразбиране** — Администратор я включва за всеки сървър поотделно.
+
+```
+!everyoneguard-enable        ← ВКЛЮЧВА защитата за ТОЗИ сървър
+!everyoneguard-disable       ← ИЗКЛЮЧВА я
+!everyoneguard-ai-enable     ← ВКЛЮЧВА и AI проверка на @everyone съобщения със снимки
+!everyoneguard-ai-disable    ← изключва AI проверката (защитата си остава включена)
+!everyoneguard-status        ← показва какво е ВКЛ/ИЗКЛ и дали ботът има нужните права
+
+```
+
+**Какво се случва със съобщение с `@everyone` / `@here`:**
+
+```text
+Съобщение с @everyone / @here
+            ↓
+Авторът е Админ или има mod_role?  ── да ──→ игнорира се
+            ↓ не
+Бърза проверка (скам думи, непознати линкове, снимки)
+   ├── ясно е скам ──────────────────┐
+   ├── изглежда нормално ──→ оставя се│
+   └── неясно + има снимка/и ──→ AI проверка (само ако е включена)
+                                     ↓
+                  Скам и AI е поне 80% сигурен?
+                                     ↓ да
+              1. съобщението се трие
+              2. авторът получава таймаут за 24 часа
+              3. предупреждение в канала (изчезва след 15 сек)
+              4. ЛС до собственика на сървъра + всеки Администратор
+              5. запис в admin_log_channel
+```
+
+- Обикновен пинг като „@everyone кой играе довечера?" се **игнорира** — никой не се наказва само защото е пингнал.
+- Бързата проверка дава точки за скам думи (casino, promo code, withdrawal, crypto, giveaway, free Nitro, „claim"…), линкове към непознати сайтове и няколко снимки наведнъж. От **3 точки** нагоре съобщението се маха. Един обикновен скрийншот **не** се маха.
+- **AI проверка на снимки (по избор):** ако съобщение с `@everyone` има снимка/и и бързата проверка не го е засякла, снимките се четат от AI. Съобщението се маха само ако AI е поне **80% сигурен**, че е скам. Съобщения без снимки никога не се пращат към AI. Ако AI не е достъпен, нищо не се случва. Ползва същия `GEMINI_API_KEY` като четенето на bounty и е ограничена до една проверка на потребител на 20 секунди и 30 на сървър на час.
+- Администратори и хора с `mod_role` никога не се проверяват.
+- ЛС-то и логът съдържат потребителя, канала, цялото съобщение, предприетото действие и причината за засичането.
+
+> ⚠️ Ботът има нужда от **Manage Messages** и **Moderate Members (Timeout)**, а ролята му трябва да е **над** ролите на члена. Ако таймаутът не успее, съобщението пак се трие и админите получават известие. `!everyoneguard-status` показва какво липсва.
+> 💡 Ако акаунтът на член е хакнат: кажи му да смени паролата, да включи 2FA и да махне непознатите приложения от *Discord → Authorized Apps*. Когато акаунтът е сигурен, махни таймаута ръчно (десен клик на члена → *Remove Timeout*).
 
 ---
 
@@ -1247,6 +1367,8 @@ Use the detailed sections above for full explanations. This list is a quick look
 | `!clear` / `!say` / `!sendto` / `!addrole` / `!removerole` | Moderation |
 | `!sendbday` | Birthday message |
 | `!ship-addrepair` / `!ship-repairs` / `!ship-removerepair` | Repair Ship |
+| `!linkscan-enable` / `!linkscan-disable` / `!linkscan-status` | Link scanner on/off (Admin) |
+| `!everyoneguard-*` / `!everyoneguard-ai-*` | @everyone Scam Guard and its AI image check (Admin) |
 
 > 💡 **Rule of thumb:** If you are unsure whether a command is allowed for you or where it should be used, open the relevant feature section above first. It explains the permissions, channel restrictions, and automatic behavior.
 
