@@ -742,6 +742,77 @@ Quick check (scam words, unknown links, images)
 
 ---
 
+### 🎭 Role Panels & Quick Role Tools (Admin)
+
+Members pick their own roles from a message with buttons or a dropdown. Nothing is stored in the database — each panel remembers its roles itself, so panels keep working after a restart. Creating a panel is the opt-in; deleting the message turns it off.
+
+```
+!panel-lang [#channel]          ← language buttons (each flag role is created automatically on its first button press)
+!panel-colors [#channel]        ← colour dropdown, pick ONE colour (each colour role is created automatically on first pick)
+!panel-custom <buttons|menu|menu-single> <title> | <description> @role @role ... [#channel]
+                                ← a panel from roles you already have
+!role-create <name> [#hex]      ← create a plain role (no permissions)
+!role-give @role @user @user    ← give a role to specific members
+!role-take @role @user @user    ← remove a role from specific members
+!role-bulk @role all            ← give a role to every human member (asks to confirm)
+!role-bulk @role @otherRole     ← give a role to everyone who has @otherRole
+!role-bulk-remove @role         ← remove a role from everyone who has it
+!rolepanel-help                 ← short help
+```
+
+- Every panel has a banner image, a short explanation and the list of roles. The `| description` part of `!panel-custom` is optional, e.g. `!panel-custom buttons Event notifications | Pick the events you want to be pinged for @Events @Events-Global`. (Banners need the same `@napi-rs/canvas` packages as the weekly top; without them panels have no image.)
+- Buttons toggle a role on/off. After a press the member gets a private view of the same buttons where the roles they have are **green** (they can keep toggling there; the public panel stays neutral because a shared message cannot show a different colour to each person); the dropdown can allow many roles (`menu`) or just one (`menu-single`, used for colours). Replies are private (only the member sees them).
+- Which channels a role can see is set in Discord: hide the channel from `@everyone` and allow the role.
+- The bot never hands out managed roles, roles above its own, or roles with powerful permissions (Administrator, Manage Server/Roles/Channels/Messages, Kick/Ban/Timeout, @everyone mentions...). This is checked when the panel is created and on every click.
+- Bulk jobs run one at a time per server and can take several minutes on big servers (Discord rate limits).
+
+> ⚠️ The bot needs **Manage Roles**, and its role must be **above** every role it hands out.
+
+---
+
+### 🏆 Weekly Bounty Top (Optional)
+
+Every **Monday at 02:00 (Bulgarian time)** the bot reads the bounties from the database and posts the **Top 10** with a special **wanted poster** (image) for each of the **Top 3** — gold, silver and bronze. The three winners get the roles **🥇 / 🥈 / 🥉 Bounty Top 1 / 2 / 3** (the bot creates them the first time) and last week's holders lose them.
+
+```
+!weeklytop-enable           ← turn it ON for THIS server (OFF by default)
+!weeklytop-disable          ← turn it OFF
+!weeklytop-channel #channel ← where it is posted (default: bounty_channel)
+!weeklytop-preview          ← post it NOW without touching roles (test)
+!weeklytop-now              ← run the full weekly job NOW (posts + roles)
+!weeklytop-status           ← settings + whether posters are available
+```
+
+- Uses one database query per enabled server per week; nothing else is stored except the three role IDs.
+- Members who left the server and bots are skipped.
+- Posters need the packages `@napi-rs/canvas` and `@fontsource/pirata-one` (`npm install`). Without them the bot still posts the Top 10 as a normal embed.
+- The bot needs **Manage Roles**, and its role must be **above** the Top roles. Move the Top roles in the role list to control how they show up.
+
+---
+
+### 📣 Event Reminders (Optional)
+
+Embed reminders for game events (Mania, Guild War, Belly Rush ports and sailing, Sunday Prep, Shandora, Ghost Trial). This is separate from the old text reminders, which keep working. For each event the bot posts **one message that edits itself**: *"starts soon"* 30 minutes before (with a live countdown and the start time in **each member's own timezone**), then *"LIVE"* at the start, then a grey *"has ended"* with the next date. The events role is pinged 30 minutes before and at the start.
+
+```
+!events-enable            ← turn ON for THIS server (OFF by default)
+!events-disable           ← turn OFF
+!events-version main|global|both ← which game version this server follows (default: main)
+!events-channel #channel  ← the Events channel
+!events-channel-global #channel ← separate channel for the global version (optional)
+!events-role @role        ← role to ping (optional; no role = no pings)
+!events-role-global @role ← role for the global version (optional, else the main role)
+!events-board [#channel]  ← post the schedule board(s) that update themselves; add a #channel to put them all in one place
+!events-test mania        ← play the whole flow now, without pings
+!events-list              ← event keys and status
+```
+
+- Events, days, times, texts and durations live in the `BASE_EVENTS` list at the top of `eventReminders.js` — add a new event with one block. Every event exists in two versions with the same days and clock times: **main** (Europe/London, like the old reminders) and **global** (the game clock **GMT-4**, fixed). A server follows `main`, `global` or `both` (`!events-version`). Events with a closing warning (Shandora, Ghost Trial) edit the same message to “closing soon”. **Ghost Trial is a weekly event:** it opens Monday 00:00 and closes Sunday 23:00 (one message for the whole week, with a “1 hour left” warning). Every message has a colourful banner image with the event name and its status (it uses the same `@napi-rs/canvas` packages as the weekly top; without them the messages simply have no banner). The schedule board has one card per event with *LIVE NOW*, the next run and the schedule in your own timezone.
+- Nothing is stored in the database: a once-a-minute check runs in memory.
+- Let members choose the ping role themselves with a role panel: `!panel-custom buttons Events @EventsRole`.
+
+---
+
 ### 🗑️ Moderation Logging (Automatic)
 
 Logged to `admin_log_channel`.
@@ -769,6 +840,9 @@ Some systems intentionally allow commands only in their configured channel, such
 - `belly_rush_roles_channel`
 
 Move the command to the correct channel instead of changing permissions unnecessarily.
+
+### A role panel button says the role is not available
+The role is above the bot's role, is managed by another bot, or has powerful permissions. Move the bot's role above it, or remove the dangerous permissions from the role.
 
 ### A role is not assigned
 Check:
@@ -1341,6 +1415,76 @@ good morning / добро утро  ← добро утро GIF
 
 ---
 
+### 🎭 Панели за роли и бързи инструменти (Admin)
+
+Членовете сами си избират роли от съобщение с бутони или падащо меню. Нищо не се пази в базата — всеки панел помни ролите си сам, затова работи и след рестарт. Създаването на панел е включването; изтриеш ли съобщението, спира.
+
+```
+!panel-lang [#канал]            ← бутони за езици (всяка роля с флагче се създава автоматично при първото натискане)
+!panel-colors [#канал]          ← меню с цветове, избираш ЕДИН цвят (всеки цвят се създава автоматично при първия избор)
+!panel-custom <buttons|menu|menu-single> <заглавие> | <описание> @роля @роля ... [#канал]
+                                ← панел от роли, които вече имаш
+!role-create <име> [#hex]       ← създава проста роля (без права)
+!role-give @роля @user @user    ← дава роля на конкретни членове
+!role-take @роля @user @user    ← маха роля от конкретни членове
+!role-bulk @роля all            ← дава роля на всички хора (пита за потвърждение)
+!role-bulk @роля @другаРоля     ← дава роля на всички, които имат @другаРоля
+!role-bulk-remove @роля         ← маха роля от всички, които я имат
+!rolepanel-help                 ← кратка помощ
+```
+
+- Бутоните включват/изключват роля. След натискане членът получава лична версия на същите бутони, където ролите, които има, са **зелени** (там може да продължи да натиска; публичният панел остава еднакъв, защото едно съобщение не може да е различно оцветено за всеки); менюто може да позволява много роли (`menu`) или само една (`menu-single`, за цветове). Отговорите са лични (вижда ги само членът).
+- Кои канали вижда една роля се настройва в Discord: скриваш канала за `@everyone` и го разрешаваш за ролята.
+- Ботът никога не раздава управлявани роли, роли над неговата или роли с мощни права (Administrator, Manage Server/Roles/Channels/Messages, Kick/Ban/Timeout, @everyone...). Проверява се при създаване на панела и при всеки клик.
+- Масовите задачи се изпълняват по една на сървър и на големи сървъри могат да отнемат няколко минути (лимити на Discord).
+
+> ⚠️ Ботът има нужда от **Manage Roles**, а ролята му трябва да е **над** всички роли, които раздава.
+
+---
+
+### 🏆 Седмичен Bounty Топ (по избор)
+
+Всеки **понеделник в 02:00 (българско време)** ботът чете bounty-тата от базата и пуска **Топ 10** със специален **wanted poster** (картинка) за всеки от **Топ 3** — златен, сребърен и бронзов. Тримата победители получават ролите **🥇 / 🥈 / 🥉 Bounty Top 1 / 2 / 3** (ботът ги създава първия път), а миналата седмица победителите ги губят.
+
+```
+!weeklytop-enable           ← ВКЛЮЧВА за ТОЗИ сървър (по подразбиране ИЗКЛЮЧЕНО)
+!weeklytop-disable          ← ИЗКЛЮЧВА
+!weeklytop-channel #канал   ← къде се пуска (по подразбиране: bounty_channel)
+!weeklytop-preview          ← пуска го СЕГА без да пипа ролите (тест)
+!weeklytop-now              ← изпълнява цялата седмична задача СЕГА (пост + роли)
+!weeklytop-status           ← настройки + дали има постери
+```
+
+- Ползва една заявка към базата на сървър седмично; друго не се пази освен ID-тата на трите роли.
+- Хора, които са напуснали, и ботове се прескачат.
+- Постерите изискват пакетите `@napi-rs/canvas` и `@fontsource/pirata-one` (`npm install`). Без тях ботът пак пуска Топ 10 като обикновен embed.
+- Ботът има нужда от **Manage Roles**, а ролята му трябва да е **над** Top ролите.
+
+---
+
+### 📣 Напомняния за събития (по избор)
+
+Embed напомняния за събитията на играта (Mania, Guild War, пристанищата и плаването на Belly Rush, Sunday Prep, Shandora, Ghost Trial). Отделно е от старите текстови напомняния, които продължават да работят. За всяко събитие ботът пуска **едно съобщение, което се редактира само**: *„започва скоро“* 30 минути преди (с живо обратно броене и часа в **часовата зона на всеки член**), после *„LIVE“* при старта, после сиво *„приключи“* със следващата дата. Ролята за събития се пингва 30 минути преди и при старта.
+
+```
+!events-enable            ← ВКЛЮЧВА за ТОЗИ сървър (по подразбиране ИЗКЛЮЧЕНО)
+!events-disable           ← ИЗКЛЮЧВА
+!events-version main|global|both ← коя версия на играта следва сървърът (по подразбиране: main)
+!events-channel #канал    ← каналът за събития
+!events-channel-global #канал ← отделен канал за глобалната версия (по желание)
+!events-role @роля        ← роля за пинг (по желание; без роля няма пингове)
+!events-role-global @роля ← роля за глобалната версия (по желание, иначе основната)
+!events-board [#канал]    ← пуска таблата с разписанието, които се обновяват сами; с #канал всички отиват на едно място
+!events-test mania        ← пуска целия процес сега, без пингове
+!events-list              ← ключове на събитията и състояние
+```
+
+- Събития, дни, часове, текстове и продължителности са в списъка `BASE_EVENTS` най-отгоре във `eventReminders.js` — ново събитие се добавя с един блок. Всяко събитие съществува в две версии със същите дни и часове: **main** (Europe/London, като старите напомняния) и **global** (часовникът на играта **GMT-4**, фиксиран). Сървърът следва `main`, `global` или `both` (`!events-version`). Събития с предупреждение за затваряне (Shandora, Ghost Trial) редактират същото съобщение на „closing soon“. **Ghost Trial е седмично събитие:** отваря в понеделник 00:00 и затваря в неделя 23:00 (едно съобщение за цялата седмица, с предупреждение „остава 1 час“). Всяко съобщение има цветен банер с името на събитието и статуса му (ползва същите пакети `@napi-rs/canvas` като седмичния топ; без тях съобщенията просто нямат банер). Таблото с разписанието има по една карта на събитие с *LIVE NOW*, следващото пускане и разписанието в твоята часова зона.
+- Нищо не се пази в базата: проверка веднъж в минута в паметта.
+- Членовете могат сами да си вземат ролята за пинг с панел: `!panel-custom buttons Events @РолятаЗаСъбития`.
+
+---
+
 ### 🗑️ Логване на модерация (автоматично)
 
 Логва се в `admin_log_channel`.
@@ -1388,6 +1532,10 @@ Use the detailed sections above for full explanations. This list is a quick look
 | `!ship-addrepair` / `!ship-repairs` / `!ship-removerepair` | Repair Ship |
 | `!linkscan-enable` / `!linkscan-disable` / `!linkscan-status` | Link scanner on/off (Admin) |
 | `!everyoneguard-*` / `!everyoneguard-ai-*` | @everyone Scam Guard and its AI image check (Admin) |
+| `!panel-lang` / `!panel-colors` / `!panel-custom` | Self-assign role panels (Admin) |
+| `!role-create` / `!role-give` / `!role-take` / `!role-bulk` / `!role-bulk-remove` | Quick role tools (Admin) |
+| `!weeklytop-*` | Weekly bounty Top 10, posters and Top 3 roles (Admin) |
+| `!events-*` | Embed event reminders (Admin) |
 
 > 💡 **Rule of thumb:** If you are unsure whether a command is allowed for you or where it should be used, open the relevant feature section above first. It explains the permissions, channel restrictions, and automatic behavior.
 
