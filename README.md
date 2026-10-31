@@ -778,6 +778,9 @@ Every **Monday at 02:00 (Bulgarian time)** the bot reads the bounties from the d
 !weeklytop-enable           ← turn it ON for THIS server (OFF by default)
 !weeklytop-disable          ← turn it OFF
 !weeklytop-channel #channel ← where it is posted (default: bounty_channel)
+!weeklytop-boards            ← TWO leaderboards (Europe / Global) by role; creates the roles if needed ("off" = one board)
+!weeklytop-channel-global #channel ← separate channel for the Global board (optional)
+!weeklytop-picker [#channel] ← post the "choose ONE leaderboard" buttons (cannot pick both)
 !weeklytop-preview          ← post it NOW without touching roles (test)
 !weeklytop-now              ← run the full weekly job NOW (posts + roles)
 !weeklytop-status           ← settings + whether posters are available
@@ -792,7 +795,7 @@ Every **Monday at 02:00 (Bulgarian time)** the bot reads the bounties from the d
 
 ### 📣 Event Reminders (Optional)
 
-Embed reminders for game events (Mania, Guild War, Belly Rush ports and sailing, Sunday Prep, Shandora, Ghost Trial). This is separate from the old text reminders, which keep working. For each event the bot posts **one message that edits itself**: *"starts soon"* 30 minutes before (with a live countdown and the start time in **each member's own timezone**), then *"LIVE"* at the start, then a grey *"has ended"* with the next date. The events role is pinged 30 minutes before and at the start.
+Embed reminders for game events (Mania, Guild War, Belly Rush ports and sailing, Sunday Prep, Shandora, Ghost Trial). This is separate from the old text reminders, which keep working. For each event the bot posts **one message that edits itself**: *"starts soon"* 30 minutes before (with a live countdown and the start time in **each member's own timezone**), then *"LIVE"* at the start, then a grey *"has ended"* with the next date, which the bot deletes 1 hour later so the channel stays clean. The events role is pinged 30 minutes before and at the start.
 
 ```
 !events-enable            ← turn ON for THIS server (OFF by default)
@@ -1450,6 +1453,9 @@ good morning / добро утро  ← добро утро GIF
 !weeklytop-enable           ← ВКЛЮЧВА за ТОЗИ сървър (по подразбиране ИЗКЛЮЧЕНО)
 !weeklytop-disable          ← ИЗКЛЮЧВА
 !weeklytop-channel #канал   ← къде се пуска (по подразбиране: bounty_channel)
+!weeklytop-boards            ← ДВЕ класации (Europe / Global) по роля; създава ролите ако ги няма ("off" = една класация)
+!weeklytop-channel-global #канал ← отделен канал за Global класацията (по избор)
+!weeklytop-picker [#канал]   ← пуска съобщението с бутони „избери ЕДНА класация" (не може и двете)
 !weeklytop-preview          ← пуска го СЕГА без да пипа ролите (тест)
 !weeklytop-now              ← изпълнява цялата седмична задача СЕГА (пост + роли)
 !weeklytop-status           ← настройки + дали има постери
@@ -1535,6 +1541,7 @@ Use the detailed sections above for full explanations. This list is a quick look
 | `!panel-lang` / `!panel-colors` / `!panel-custom` | Self-assign role panels (Admin) |
 | `!role-create` / `!role-give` / `!role-take` / `!role-bulk` / `!role-bulk-remove` | Quick role tools (Admin) |
 | `!weeklytop-*` | Weekly bounty Top 10, posters and Top 3 roles (Admin) |
+| `!powerranks-*` | Power ranking roles by bounty: Rookie Pirate → Pirate King (Admin). `!powerranks-enable`, then `!powerranks-sync` once |
 | `!events-*` | Embed event reminders (Admin) |
 
 > 💡 **Rule of thumb:** If you are unsure whether a command is allowed for you or where it should be used, open the relevant feature section above first. It explains the permissions, channel restrictions, and automatic behavior.
