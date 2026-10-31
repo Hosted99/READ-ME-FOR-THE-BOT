@@ -45,6 +45,12 @@ Important `!setconfig` keys: `mod_role`, `admin_log_channel`, `welcome_channel`,
 | Command | What it does |
 |---|---|
 | 🔴 `!weeklytop-channel #channel` | Where the Top 10 and posters are posted (default: `bounty_channel`) |
+| 🔴 `!powerranks-enable` / `!powerranks-disable` | Power ranking roles by bounty (Rookie Pirate … Pirate King, given next to the "Bounty: XM+" role) | OFF |
+| 🔴 `!powerranks-sync` | Ranks everyone who already has a bounty (run once after enabling) |
+| 🔴 `!powerranks-status` | Shows whether it is on and the full ladder |
+| 🔴 `!weeklytop-boards [@EuropeRole @GlobalRole \| off]` | Splits the Top 10 into **Europe** and **Global** boards by role (creates the roles if none given). Each board gets its own Top 10, posters and Top 3 roles |
+| 🔴 `!weeklytop-channel-global #channel` | Separate channel for the Global board (optional) |
+| 🔴 `!weeklytop-picker [#channel]` | Posts the "choose ONE leaderboard" buttons (members can't be in both) |
 | 🔴 `!weeklytop-preview` | Posts it right now without changing roles (for testing) |
 | 🔴 `!weeklytop-now` | Runs the full job right now (posts + changes the Top 1/2/3 roles) |
 | 🔴 `!weeklytop-status` | Shows settings and whether posters are available |
